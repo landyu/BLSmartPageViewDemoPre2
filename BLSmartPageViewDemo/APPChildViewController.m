@@ -22,7 +22,7 @@
     self.screenNumber.text = [NSString stringWithFormat:@"Screen #%ld", (long)self.index];
     //ViewController.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen ######"];
     
-    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    //AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     
     //if(appDelegate.viewControllerNavigationItemSharedInstance != nil)
     {
