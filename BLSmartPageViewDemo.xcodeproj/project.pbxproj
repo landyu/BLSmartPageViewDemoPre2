@@ -14,6 +14,9 @@
 		17DBAD131B74B03B00B26A83 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 17DBAD121B74B03B00B26A83 /* Images.xcassets */; };
 		17DBAD161B74B03B00B26A83 /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DBAD141B74B03B00B26A83 /* LaunchScreen.xib */; };
 		17DBAD221B74B03B00B26A83 /* BLSmartPageViewDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD211B74B03B00B26A83 /* BLSmartPageViewDemoTests.m */; };
+		17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD351B74B81000B26A83 /* APPChildViewController.m */; };
+		17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DBAD361B74B81000B26A83 /* APPChildViewController.xib */; };
+		17DD16511B75AC1200E0858C /* homeDemo.png in Resources */ = {isa = PBXBuildFile; fileRef = 17DD16501B75AC1200E0858C /* homeDemo.png */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -40,6 +43,10 @@
 		17DBAD1B1B74B03B00B26A83 /* BLSmartPageViewDemoTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BLSmartPageViewDemoTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DBAD201B74B03B00B26A83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17DBAD211B74B03B00B26A83 /* BLSmartPageViewDemoTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BLSmartPageViewDemoTests.m; sourceTree = "<group>"; };
+		17DBAD341B74B81000B26A83 /* APPChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPChildViewController.h; sourceTree = "<group>"; };
+		17DBAD351B74B81000B26A83 /* APPChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPChildViewController.m; sourceTree = "<group>"; };
+		17DBAD361B74B81000B26A83 /* APPChildViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = APPChildViewController.xib; sourceTree = "<group>"; };
+		17DD16501B75AC1200E0858C /* homeDemo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = homeDemo.png; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +88,7 @@
 		17DBAD041B74B03B00B26A83 /* BLSmartPageViewDemo */ = {
 			isa = PBXGroup;
 			children = (
+				17DD164F1B75ABED00E0858C /* Image */,
 				17DBAD091B74B03B00B26A83 /* AppDelegate.h */,
 				17DBAD0A1B74B03B00B26A83 /* AppDelegate.m */,
 				17DBAD0C1B74B03B00B26A83 /* ViewController.h */,
@@ -89,6 +97,9 @@
 				17DBAD121B74B03B00B26A83 /* Images.xcassets */,
 				17DBAD141B74B03B00B26A83 /* LaunchScreen.xib */,
 				17DBAD051B74B03B00B26A83 /* Supporting Files */,
+				17DBAD341B74B81000B26A83 /* APPChildViewController.h */,
+				17DBAD351B74B81000B26A83 /* APPChildViewController.m */,
+				17DBAD361B74B81000B26A83 /* APPChildViewController.xib */,
 			);
 			path = BLSmartPageViewDemo;
 			sourceTree = "<group>";
@@ -117,6 +128,14 @@
 				17DBAD201B74B03B00B26A83 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		17DD164F1B75ABED00E0858C /* Image */ = {
+			isa = PBXGroup;
+			children = (
+				17DD16501B75AC1200E0858C /* homeDemo.png */,
+			);
+			name = Image;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -199,9 +218,11 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17DD16511B75AC1200E0858C /* homeDemo.png in Resources */,
 				17DBAD111B74B03B00B26A83 /* Main.storyboard in Resources */,
 				17DBAD161B74B03B00B26A83 /* LaunchScreen.xib in Resources */,
 				17DBAD131B74B03B00B26A83 /* Images.xcassets in Resources */,
+				17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -222,6 +243,7 @@
 				17DBAD0E1B74B03B00B26A83 /* ViewController.m in Sources */,
 				17DBAD0B1B74B03B00B26A83 /* AppDelegate.m in Sources */,
 				17DBAD081B74B03B00B26A83 /* main.m in Sources */,
+				17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -418,6 +440,7 @@
 				17DBAD271B74B03B00B26A83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 		17DBAD281B74B03B00B26A83 /* Build configuration list for PBXNativeTarget "BLSmartPageViewDemoTests" */ = {
 			isa = XCConfigurationList;
@@ -426,6 +449,7 @@
 				17DBAD2A1B74B03B00B26A83 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};

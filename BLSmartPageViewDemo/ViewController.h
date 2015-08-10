@@ -8,8 +8,20 @@
 
 #import <UIKit/UIKit.h>
 
-@interface ViewController : UIViewController
+@interface ViewController : UIViewController<UIPageViewControllerDataSource, UIPageViewControllerDelegate>
+{
+//    - (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed;
+//    
+//    - (UIPageViewControllerSpineLocation)pageViewController:(UIPageViewController *)pageViewController spineLocationForInterfaceOrientation:(UIInterfaceOrientation)orientation;
+}
 
+
+
+
+@property (strong, nonatomic) UIPageViewController *pageController;
+
+@property (strong, nonatomic) IBOutlet UINavigationItem *viewControllerNavigationItem;
+@property (strong, nonatomic) IBOutletCollection(UINavigationItem) NSArray *viewControllerNavigationItemCollection;
 
 @end
 

@@ -9,7 +9,11 @@
 #import <UIKit/UIKit.h>
 
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
+{
+    UINavigationItem *viewControllerNavigationItemSharedInstance;
+}
 
+@property(strong, nonatomic) UINavigationItem *viewControllerNavigationItemSharedInstance;
 @property (strong, nonatomic) UIWindow *window;
 
 
