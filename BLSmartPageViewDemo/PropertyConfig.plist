@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>SceneList</key>
+	<dict>
+		<key>0</key>
+		<string>LivingDiningRoom</string>
+		<key>1</key>
+		<string>NorthMainBedroom</string>
+		<key>2</key>
+		<string>SecondBedroom</string>
+		<key>3</key>
+		<string>ButleRoom</string>
+	</dict>
+</dict>
+</plist>

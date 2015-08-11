@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		17D755601B79C5EB00385A30 /* SecondBedroom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */; };
+		17D755621B79C62500385A30 /* ButleRoom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17D755611B79C62500385A30 /* ButleRoom.xib */; };
 		17DBAD081B74B03B00B26A83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD071B74B03B00B26A83 /* main.m */; };
 		17DBAD0B1B74B03B00B26A83 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD0A1B74B03B00B26A83 /* AppDelegate.m */; };
 		17DBAD0E1B74B03B00B26A83 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD0D1B74B03B00B26A83 /* ViewController.m */; };
@@ -17,6 +19,11 @@
 		17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD351B74B81000B26A83 /* APPChildViewController.m */; };
 		17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DBAD361B74B81000B26A83 /* APPChildViewController.xib */; };
 		17DD16511B75AC1200E0858C /* homeDemo.png in Resources */ = {isa = PBXBuildFile; fileRef = 17DD16501B75AC1200E0858C /* homeDemo.png */; };
+		17DDCA061B787A3B00AF415B /* LivingDiningRoom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */; };
+		17DDCA0C1B787D6800AF415B /* 资源库 in Resources */ = {isa = PBXBuildFile; fileRef = 17DDCA0B1B787D6800AF415B /* 资源库 */; };
+		17DDCA0E1B788A4000AF415B /* NorthMainBedroom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DDCA0D1B788A4000AF415B /* NorthMainBedroom.xib */; };
+		17DDCA111B78B22100AF415B /* PropertyConfig.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17DDCA101B78B22100AF415B /* PropertyConfig.plist */; };
+		17DDCA141B78B6E500AF415B /* PropertyConfigPhrase.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DDCA131B78B6E500AF415B /* PropertyConfigPhrase.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -30,6 +37,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SecondBedroom.xib; sourceTree = "<group>"; };
+		17D755611B79C62500385A30 /* ButleRoom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ButleRoom.xib; sourceTree = "<group>"; };
 		17DBAD021B74B03B00B26A83 /* BLSmartPageViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLSmartPageViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DBAD061B74B03B00B26A83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17DBAD071B74B03B00B26A83 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -47,6 +56,12 @@
 		17DBAD351B74B81000B26A83 /* APPChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPChildViewController.m; sourceTree = "<group>"; };
 		17DBAD361B74B81000B26A83 /* APPChildViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = APPChildViewController.xib; sourceTree = "<group>"; };
 		17DD16501B75AC1200E0858C /* homeDemo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = homeDemo.png; sourceTree = "<group>"; };
+		17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LivingDiningRoom.xib; sourceTree = "<group>"; };
+		17DDCA0B1B787D6800AF415B /* 资源库 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "资源库"; sourceTree = "<group>"; };
+		17DDCA0D1B788A4000AF415B /* NorthMainBedroom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = NorthMainBedroom.xib; sourceTree = "<group>"; };
+		17DDCA101B78B22100AF415B /* PropertyConfig.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = PropertyConfig.plist; sourceTree = "<group>"; };
+		17DDCA121B78B6E500AF415B /* PropertyConfigPhrase.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = PropertyConfigPhrase.h; sourceTree = "<group>"; };
+		17DDCA131B78B6E500AF415B /* PropertyConfigPhrase.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = PropertyConfigPhrase.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -67,6 +82,17 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		17D755631B79C67D00385A30 /* NibFile */ = {
+			isa = PBXGroup;
+			children = (
+				17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */,
+				17DDCA0D1B788A4000AF415B /* NorthMainBedroom.xib */,
+				17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */,
+				17D755611B79C62500385A30 /* ButleRoom.xib */,
+			);
+			name = NibFile;
+			sourceTree = "<group>";
+		};
 		17DBACF91B74B03B00B26A83 = {
 			isa = PBXGroup;
 			children = (
@@ -100,6 +126,9 @@
 				17DBAD341B74B81000B26A83 /* APPChildViewController.h */,
 				17DBAD351B74B81000B26A83 /* APPChildViewController.m */,
 				17DBAD361B74B81000B26A83 /* APPChildViewController.xib */,
+				17D755631B79C67D00385A30 /* NibFile */,
+				17DDCA121B78B6E500AF415B /* PropertyConfigPhrase.h */,
+				17DDCA131B78B6E500AF415B /* PropertyConfigPhrase.m */,
 			);
 			path = BLSmartPageViewDemo;
 			sourceTree = "<group>";
@@ -109,6 +138,7 @@
 			children = (
 				17DBAD061B74B03B00B26A83 /* Info.plist */,
 				17DBAD071B74B03B00B26A83 /* main.m */,
+				17DDCA101B78B22100AF415B /* PropertyConfig.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -133,6 +163,7 @@
 		17DD164F1B75ABED00E0858C /* Image */ = {
 			isa = PBXGroup;
 			children = (
+				17DDCA0B1B787D6800AF415B /* 资源库 */,
 				17DD16501B75AC1200E0858C /* homeDemo.png */,
 			);
 			name = Image;
@@ -218,11 +249,17 @@
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				17D755601B79C5EB00385A30 /* SecondBedroom.xib in Resources */,
+				17DDCA0C1B787D6800AF415B /* 资源库 in Resources */,
 				17DD16511B75AC1200E0858C /* homeDemo.png in Resources */,
 				17DBAD111B74B03B00B26A83 /* Main.storyboard in Resources */,
 				17DBAD161B74B03B00B26A83 /* LaunchScreen.xib in Resources */,
+				17DDCA061B787A3B00AF415B /* LivingDiningRoom.xib in Resources */,
+				17DDCA0E1B788A4000AF415B /* NorthMainBedroom.xib in Resources */,
+				17DDCA111B78B22100AF415B /* PropertyConfig.plist in Resources */,
 				17DBAD131B74B03B00B26A83 /* Images.xcassets in Resources */,
 				17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */,
+				17D755621B79C62500385A30 /* ButleRoom.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,6 +281,7 @@
 				17DBAD0B1B74B03B00B26A83 /* AppDelegate.m in Sources */,
 				17DBAD081B74B03B00B26A83 /* main.m in Sources */,
 				17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */,
+				17DDCA141B78B6E500AF415B /* PropertyConfigPhrase.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

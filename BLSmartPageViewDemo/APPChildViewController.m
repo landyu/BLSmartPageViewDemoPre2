@@ -29,16 +29,14 @@
         //appDelegate.viewControllerNavigationItemSharedInstance.title = self.screenNumber.text;
     }
     
-    //self.view.backgroundColor=[UIColor colorWithPatternImage:[UIImage imageNamed:@"homeDemo.png"]];
-    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"homeDemo.png"]];
-    //backgroundView.contentMode =UIViewContentModeTopLeft;
-    backgroundView.contentMode = UIViewContentModeScaleToFill;
-    CGRect frame = backgroundView.frame;
-    frame.size.width = 1024;
-    frame.size.height = 703;
-    backgroundView.frame = frame;
-    [self.view addSubview:backgroundView];
-    [self.view sendSubviewToBack:backgroundView];
+//    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"homeDemo.png"]];
+//    backgroundView.contentMode = UIViewContentModeScaleToFill;
+//    CGRect frame = backgroundView.frame;
+//    frame.size.width = 1024;
+//    frame.size.height = 703;
+//    backgroundView.frame = frame;
+//    [self.view addSubview:backgroundView];
+//    [self.view sendSubviewToBack:backgroundView];
     self.view.tag = self.index;
     
     

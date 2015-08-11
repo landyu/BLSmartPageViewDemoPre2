@@ -9,6 +9,7 @@
 #import "ViewController.h"
 #import "APPChildViewController.h"
 #import "AppDelegate.h"
+#import "PropertyConfigPhrase.h"
 
 @interface ViewController ()
 
@@ -27,6 +28,20 @@
     //[[self.pageController view] setFrame:CGRectMake(0, 44, 2048, 1492)];
     [[self.pageController view] setFrame:CGRectMake(0, 65, 1024, 703)];
     
+    
+    
+    
+    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    appDelegate.viewControllerNavigationItemSharedInstance = self.viewControllerNavigationItem;
+    
+    self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #0"];
+    
+    PropertyConfigPhrase *sceneConfig = [[PropertyConfigPhrase alloc] init];
+    [sceneConfig sceneListDictionary];
+    
+    self.sceneListDict = appDelegate.sceneListDictionarySharedInstance;
+    sceneListCount = [self.sceneListDict count];
+    
     APPChildViewController *initialViewController = [self viewControllerAtIndex:0];
     
     NSArray *viewControllers = [NSArray arrayWithObject:initialViewController];
@@ -36,13 +51,9 @@
     [self addChildViewController:self.pageController];
     [[self view] addSubview:[self.pageController view]];
     [self.pageController didMoveToParentViewController:self];
+
     
     
-    
-    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
-    appDelegate.viewControllerNavigationItemSharedInstance = self.viewControllerNavigationItem;
-    
-    self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #0"];
     
     //self.viewControllerNavigationItemCollection.
     //self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen ######"];
@@ -77,8 +88,8 @@
     
     
     index++;
-    
-    if (index == 5) {
+    //NSLog(@"scene list count = %d", sceneListCount);
+    if (index == sceneListCount) {
         return nil;
     }
     
@@ -88,7 +99,17 @@
 
 - (APPChildViewController *)viewControllerAtIndex:(NSUInteger)index {
     
-    APPChildViewController *childViewController = [[APPChildViewController alloc] initWithNibName:@"APPChildViewController" bundle:nil];
+    //APPChildViewController *childViewController = [[APPChildViewController alloc] initWithNibName:@"APPChildViewController" bundle:nil];
+    
+    //AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    //NSLog(@"%@", self.sceneListDict);
+    //NSLog(@"%@", appDelegate.sceneListDictionarySharedInstance);
+    
+    NSLog(@"nib name = %@", [self.sceneListDict valueForKey:[NSString stringWithFormat: @"%d", index]]);
+    //NSLog(@"key = %@", [NSString stringWithFormat: @"%d", index]);
+    //NSString *nibName = [self.sceneListDict valueForKey:[NSString stringWithFormat: @"%d", index]];
+    
+    APPChildViewController *childViewController = [[APPChildViewController alloc] initWithNibName:[self.sceneListDict valueForKey:[NSString stringWithFormat: @"%d", index]] bundle:nil];
     
     //self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #%ld", (long)index];
     childViewController.index = index;

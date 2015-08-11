@@ -11,9 +11,11 @@
 @interface AppDelegate : UIResponder <UIApplicationDelegate>
 {
     UINavigationItem *viewControllerNavigationItemSharedInstance;
+    NSMutableDictionary *sceneListDictionarySharedInstance;
 }
 
 @property(strong, nonatomic) UINavigationItem *viewControllerNavigationItemSharedInstance;
+@property(strong, nonatomic) NSMutableDictionary *sceneListDictionarySharedInstance;
 @property (strong, nonatomic) UIWindow *window;
 
 
