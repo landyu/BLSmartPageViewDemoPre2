@@ -12,7 +12,12 @@
 
 @end
 
+
+
 @implementation AppDelegate
+@synthesize viewControllerNavigationItemSharedInstance;
+@synthesize sceneListDictionarySharedInstance;
+
 
 
 - (BOOL)application:(UIApplication *)application didFinishLaunchingWithOptions:(NSDictionary *)launchOptions {

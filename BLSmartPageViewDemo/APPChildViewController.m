@@ -10,34 +10,36 @@
 #import "ViewController.h"
 #import "AppDelegate.h"
 
+
 @interface APPChildViewController ()
 
 @end
 
 @implementation APPChildViewController
+@synthesize nibName;
 
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
     self.screenNumber.text = [NSString stringWithFormat:@"Screen #%ld", (long)self.index];
-    //ViewController.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen ######"];
-    
-    //AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
-    
-    //if(appDelegate.viewControllerNavigationItemSharedInstance != nil)
-    {
-        //appDelegate.viewControllerNavigationItemSharedInstance.title = self.screenNumber.text;
-    }
-    
-//    UIImageView *backgroundView = [[UIImageView alloc] initWithImage:[UIImage imageNamed:@"homeDemo.png"]];
-//    backgroundView.contentMode = UIViewContentModeScaleToFill;
-//    CGRect frame = backgroundView.frame;
-//    frame.size.width = 1024;
-//    frame.size.height = 703;
-//    backgroundView.frame = frame;
-//    [self.view addSubview:backgroundView];
-//    [self.view sendSubviewToBack:backgroundView];
+
     self.view.tag = self.index;
+    
+    NSLog(@"view count = %d", self.view.subviews.count);
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvFromBus:) name:@"RecvFromBus" object:nil];
+    
+    for (UIView *subView in self.view.subviews)
+    {
+        if ([subView isMemberOfClass:[BLUIButton class]])
+        {
+            BLUIButton *button = (BLUIButton *) subView;
+            
+            [button addTarget:self action:@selector(buttonPressd:) forControlEvents:UIControlEventTouchUpInside];
+            
+        }
+        
+    }
     
     
 }
@@ -76,4 +78,104 @@
 - (IBAction)testButton:(UIButton *)sender {
     NSLog(@"Screen #%ld", (long)self.index);
 }
+
+- (IBAction)buttonPressd:(BLUIButton *)sender {
+    NSLog(@"buttonPressd #%ld, objName = %@", (long)self.index, sender.objName);
+    
+    
+    
+//    if (sender.selected == YES)
+//    {
+//        [sender setSelected:NO];
+//    }
+//    else
+//    {
+//        [sender setSelected:YES];
+//    }
+}
+
+
+- (void) recvFromBus: (NSNotification*) notification
+{
+    NSDictionary *dict = [notification userInfo];
+    NSLog(@"receive data from bus at NibName = %@ Scene %d dict = %@", self.nibName,self.index, dict);
+    [self actionWithGroupAddress:dict[@"Address"] withObjectValue:dict[@"Value"]];
+}
+
+//-(void)dealloc
+//{
+//    [[NSNotificationCenter defaultCenter] removeObserver:self];
+//}
+
+
+- (void)actionWithGroupAddress:(NSString *)groupAddress withObjectValue:(NSString *)objectValue
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    
+    if (!path) {
+        return;
+    }
+    NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:path];
+    
+    
+    //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
+    [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+    {
+        
+        //NSLog(@"dict[%@] = %@", key, temDict[key]);
+        NSString *objectName = (NSString *)key;
+        
+        NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
+        [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+        {
+            if ([key isEqualToString:@"ReadFromGroupAddress"])
+            {
+                NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:objectPropertyDict[key]];
+                [readFromGroupAddressDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                {
+                    NSLog(@"readFromGroupAddressDict[%@] = %@", key, readFromGroupAddressDict[key]);
+                    if ([readFromGroupAddressDict[key] isEqualToString:groupAddress])
+                    {
+
+                        for (UIView *subView in self.view.subviews)
+                        {
+//                            if (<#condition#>) {
+//                                <#statements#>
+//                            }
+                            if ([subView isMemberOfClass:[BLUIButton class]])
+                            {
+                                BLUIButton *button = (BLUIButton *) subView;
+                                if ([button.objName isEqualToString:objectName])
+                                {
+                                    if ([objectValue isEqualToString:@"1"])
+                                    {
+                                        [button setSelected:YES];
+                                    }
+                                    else if([objectValue isEqualToString:@"0"])
+                                    {
+                                        [button setSelected:NO];
+                                    }
+                                }
+                                
+                            }
+                            
+                        }
+
+                    }
+                }];
+            }
+
+        }];
+
+        
+        
+    }];
+
+//    self.sceneListMutDict = [[NSMutableDictionary alloc] initWithDictionary:[temDict objectForKey:@"SceneList"]];
+//    
+//    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+//    appDelegate.sceneListDictionarySharedInstance = self.sceneListMutDict;
+    
+}
+
 @end

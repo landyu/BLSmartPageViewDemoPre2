@@ -21,13 +21,28 @@
                                 <inset key="insetFor6xAndEarlier" minX="-10" minY="-10" maxX="20" maxY="18"/>
                                 <color key="barTintColor" red="0.10588236149999999" green="0.32549020649999999" blue="0.1176470667" alpha="1" colorSpace="deviceRGB"/>
                                 <items>
-                                    <navigationItem title="Title" id="oHZ-gQ-bUR"/>
+                                    <navigationItem id="oHZ-gQ-bUR">
+                                        <nil key="title"/>
+                                        <barButtonItem key="leftBarButtonItem" id="iqK-t3-cZt">
+                                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zms-or-1j0">
+                                                <rect key="frame" x="16" y="7" width="36" height="30"/>
+                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <state key="normal" title="Send">
+                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                                </state>
+                                                <connections>
+                                                    <action selector="recvFromBusBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OPQ-TL-Hsa"/>
+                                                </connections>
+                                            </button>
+                                        </barButtonItem>
+                                    </navigationItem>
                                 </items>
                             </navigationBar>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                     </view>
-                    <simulatedScreenMetrics key="simulatedDestinationMetrics" type="iPad"/>
+                    <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
+                    <size key="freeformSize" width="768" height="1024"/>
                     <connections>
                         <outlet property="viewControllerNavigationItem" destination="oHZ-gQ-bUR" id="RyS-7Z-pvz"/>
                         <outletCollection property="viewControllerNavigationItemCollection" destination="oHZ-gQ-bUR" id="zSs-wn-Fgv"/>
@@ -35,7 +50,7 @@
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
             </objects>
-            <point key="canvasLocation" x="141.86666666666667" y="298.19999999999993"/>
+            <point key="canvasLocation" x="141" y="298"/>
         </scene>
     </scenes>
     <simulatedMetricsContainer key="defaultSimulatedMetrics">

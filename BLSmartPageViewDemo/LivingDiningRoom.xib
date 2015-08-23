@@ -4,7 +4,7 @@
         <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
     </dependencies>
     <objects>
-        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="UIViewController">
+        <placeholder placeholderIdentifier="IBFilesOwner" id="-1" userLabel="File's Owner" customClass="APPChildViewController">
             <connections>
                 <outlet property="view" destination="iN0-l3-epB" id="Wp9-ro-Mkk"/>
             </connections>
@@ -20,27 +20,23 @@
                 <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="餐厅2x.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lsu-ME-9SQ">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="703"/>
                 </imageView>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0kO-aW-4vG" userLabel="台灯2">
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0kO-aW-4vG" userLabel="台灯2" customClass="BLUIButton">
                     <rect key="frame" x="589" y="590" width="50" height="50"/>
                     <state key="normal" image="off.png"/>
                     <state key="disabled" image="off.png"/>
                     <state key="selected" image="on.png"/>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="ButtonType">
-                            <integer key="value" value="0"/>
-                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="objName" value="台灯2"/>
                     </userDefinedRuntimeAttributes>
                 </button>
-                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uRM-4v-WXV" userLabel="台灯1">
-                    <rect key="frame" x="573" y="250" width="50" height="50"/>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="uRM-4v-WXV" userLabel="台灯1" customClass="BLUIButton" propertyAccessControl="none">
+                    <rect key="frame" x="575" y="226" width="50" height="50"/>
                     <accessibility key="accessibilityConfiguration" label=""/>
                     <state key="normal" image="off.png"/>
                     <state key="disabled" image="off.png"/>
                     <state key="selected" image="on.png"/>
                     <userDefinedRuntimeAttributes>
-                        <userDefinedRuntimeAttribute type="number" keyPath="ButtonType">
-                            <integer key="value" value="0"/>
-                        </userDefinedRuntimeAttribute>
+                        <userDefinedRuntimeAttribute type="string" keyPath="objName" value="台灯1"/>
                     </userDefinedRuntimeAttributes>
                 </button>
             </subviews>

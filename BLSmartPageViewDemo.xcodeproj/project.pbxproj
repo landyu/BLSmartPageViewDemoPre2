@@ -18,6 +18,8 @@
 		17DBAD221B74B03B00B26A83 /* BLSmartPageViewDemoTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD211B74B03B00B26A83 /* BLSmartPageViewDemoTests.m */; };
 		17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD351B74B81000B26A83 /* APPChildViewController.m */; };
 		17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DBAD361B74B81000B26A83 /* APPChildViewController.xib */; };
+		17DC5B491B7B25690007C40B /* BLUIButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DC5B481B7B25690007C40B /* BLUIButton.m */; };
+		17DC5B4B1B7B33760007C40B /* LivingDiningRoom.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17DC5B4A1B7B33760007C40B /* LivingDiningRoom.plist */; };
 		17DD16511B75AC1200E0858C /* homeDemo.png in Resources */ = {isa = PBXBuildFile; fileRef = 17DD16501B75AC1200E0858C /* homeDemo.png */; };
 		17DDCA061B787A3B00AF415B /* LivingDiningRoom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */; };
 		17DDCA0C1B787D6800AF415B /* 资源库 in Resources */ = {isa = PBXBuildFile; fileRef = 17DDCA0B1B787D6800AF415B /* 资源库 */; };
@@ -55,6 +57,9 @@
 		17DBAD341B74B81000B26A83 /* APPChildViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = APPChildViewController.h; sourceTree = "<group>"; };
 		17DBAD351B74B81000B26A83 /* APPChildViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = APPChildViewController.m; sourceTree = "<group>"; };
 		17DBAD361B74B81000B26A83 /* APPChildViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = APPChildViewController.xib; sourceTree = "<group>"; };
+		17DC5B471B7B25690007C40B /* BLUIButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLUIButton.h; sourceTree = "<group>"; };
+		17DC5B481B7B25690007C40B /* BLUIButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLUIButton.m; sourceTree = "<group>"; };
+		17DC5B4A1B7B33760007C40B /* LivingDiningRoom.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = LivingDiningRoom.plist; sourceTree = "<group>"; };
 		17DD16501B75AC1200E0858C /* homeDemo.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = homeDemo.png; sourceTree = "<group>"; };
 		17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = LivingDiningRoom.xib; sourceTree = "<group>"; };
 		17DDCA0B1B787D6800AF415B /* 资源库 */ = {isa = PBXFileReference; lastKnownFileType = folder; path = "资源库"; sourceTree = "<group>"; };
@@ -85,6 +90,8 @@
 		17D755631B79C67D00385A30 /* NibFile */ = {
 			isa = PBXGroup;
 			children = (
+				17DDCA101B78B22100AF415B /* PropertyConfig.plist */,
+				17DC5B4A1B7B33760007C40B /* LivingDiningRoom.plist */,
 				17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */,
 				17DDCA0D1B788A4000AF415B /* NorthMainBedroom.xib */,
 				17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */,
@@ -126,6 +133,7 @@
 				17DBAD341B74B81000B26A83 /* APPChildViewController.h */,
 				17DBAD351B74B81000B26A83 /* APPChildViewController.m */,
 				17DBAD361B74B81000B26A83 /* APPChildViewController.xib */,
+				17DC5B461B7B24B70007C40B /* BLCustomClass */,
 				17D755631B79C67D00385A30 /* NibFile */,
 				17DDCA121B78B6E500AF415B /* PropertyConfigPhrase.h */,
 				17DDCA131B78B6E500AF415B /* PropertyConfigPhrase.m */,
@@ -138,7 +146,6 @@
 			children = (
 				17DBAD061B74B03B00B26A83 /* Info.plist */,
 				17DBAD071B74B03B00B26A83 /* main.m */,
-				17DDCA101B78B22100AF415B /* PropertyConfig.plist */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -158,6 +165,15 @@
 				17DBAD201B74B03B00B26A83 /* Info.plist */,
 			);
 			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		17DC5B461B7B24B70007C40B /* BLCustomClass */ = {
+			isa = PBXGroup;
+			children = (
+				17DC5B471B7B25690007C40B /* BLUIButton.h */,
+				17DC5B481B7B25690007C40B /* BLUIButton.m */,
+			);
+			name = BLCustomClass;
 			sourceTree = "<group>";
 		};
 		17DD164F1B75ABED00E0858C /* Image */ = {
@@ -258,6 +274,7 @@
 				17DDCA0E1B788A4000AF415B /* NorthMainBedroom.xib in Resources */,
 				17DDCA111B78B22100AF415B /* PropertyConfig.plist in Resources */,
 				17DBAD131B74B03B00B26A83 /* Images.xcassets in Resources */,
+				17DC5B4B1B7B33760007C40B /* LivingDiningRoom.plist in Resources */,
 				17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */,
 				17D755621B79C62500385A30 /* ButleRoom.xib in Resources */,
 			);
@@ -280,6 +297,7 @@
 				17DBAD0E1B74B03B00B26A83 /* ViewController.m in Sources */,
 				17DBAD0B1B74B03B00B26A83 /* AppDelegate.m in Sources */,
 				17DBAD081B74B03B00B26A83 /* main.m in Sources */,
+				17DC5B491B7B25690007C40B /* BLUIButton.m in Sources */,
 				17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */,
 				17DDCA141B78B6E500AF415B /* PropertyConfigPhrase.m in Sources */,
 			);

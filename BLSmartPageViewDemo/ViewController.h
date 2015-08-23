@@ -23,6 +23,7 @@
 @property (strong, nonatomic) NSDictionary* sceneListDict;
 @property (strong, nonatomic) IBOutlet UINavigationItem *viewControllerNavigationItem;
 @property (strong, nonatomic) IBOutletCollection(UINavigationItem) NSArray *viewControllerNavigationItemCollection;
+- (IBAction)recvFromBusBtn:(id)sender;
 
 @end
 
