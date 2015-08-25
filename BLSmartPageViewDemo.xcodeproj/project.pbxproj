@@ -9,6 +9,10 @@
 /* Begin PBXBuildFile section */
 		17D755601B79C5EB00385A30 /* SecondBedroom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */; };
 		17D755621B79C62500385A30 /* ButleRoom.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17D755611B79C62500385A30 /* ButleRoom.xib */; };
+		17DB8B661B8AADCF00E02381 /* NorthMainBedroom.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17DB8B651B8AADCF00E02381 /* NorthMainBedroom.plist */; };
+		17DB8B681B8AAFBA00E02381 /* ButleRoom.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17DB8B671B8AAFBA00E02381 /* ButleRoom.plist */; };
+		17DB8B6A1B8AB0A600E02381 /* SecondBedroom.plist in Resources */ = {isa = PBXBuildFile; fileRef = 17DB8B691B8AB0A600E02381 /* SecondBedroom.plist */; };
+		17DB8B6F1B8B274600E02381 /* NSMutableArray+QueueStack.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DB8B6E1B8B274600E02381 /* NSMutableArray+QueueStack.m */; };
 		17DBAD081B74B03B00B26A83 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD071B74B03B00B26A83 /* main.m */; };
 		17DBAD0B1B74B03B00B26A83 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD0A1B74B03B00B26A83 /* AppDelegate.m */; };
 		17DBAD0E1B74B03B00B26A83 /* ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17DBAD0D1B74B03B00B26A83 /* ViewController.m */; };
@@ -41,6 +45,11 @@
 /* Begin PBXFileReference section */
 		17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = SecondBedroom.xib; sourceTree = "<group>"; };
 		17D755611B79C62500385A30 /* ButleRoom.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; path = ButleRoom.xib; sourceTree = "<group>"; };
+		17DB8B651B8AADCF00E02381 /* NorthMainBedroom.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = NorthMainBedroom.plist; sourceTree = "<group>"; };
+		17DB8B671B8AAFBA00E02381 /* ButleRoom.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = ButleRoom.plist; sourceTree = "<group>"; };
+		17DB8B691B8AB0A600E02381 /* SecondBedroom.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = SecondBedroom.plist; sourceTree = "<group>"; };
+		17DB8B6D1B8B274600E02381 /* NSMutableArray+QueueStack.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSMutableArray+QueueStack.h"; sourceTree = "<group>"; };
+		17DB8B6E1B8B274600E02381 /* NSMutableArray+QueueStack.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSMutableArray+QueueStack.m"; sourceTree = "<group>"; };
 		17DBAD021B74B03B00B26A83 /* BLSmartPageViewDemo.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BLSmartPageViewDemo.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		17DBAD061B74B03B00B26A83 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		17DBAD071B74B03B00B26A83 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
@@ -91,11 +100,14 @@
 			isa = PBXGroup;
 			children = (
 				17DDCA101B78B22100AF415B /* PropertyConfig.plist */,
+				17DB8B671B8AAFBA00E02381 /* ButleRoom.plist */,
+				17D755611B79C62500385A30 /* ButleRoom.xib */,
 				17DC5B4A1B7B33760007C40B /* LivingDiningRoom.plist */,
 				17DDCA051B787A3B00AF415B /* LivingDiningRoom.xib */,
+				17DB8B651B8AADCF00E02381 /* NorthMainBedroom.plist */,
 				17DDCA0D1B788A4000AF415B /* NorthMainBedroom.xib */,
+				17DB8B691B8AB0A600E02381 /* SecondBedroom.plist */,
 				17D7555F1B79C5EB00385A30 /* SecondBedroom.xib */,
-				17D755611B79C62500385A30 /* ButleRoom.xib */,
 			);
 			name = NibFile;
 			sourceTree = "<group>";
@@ -146,6 +158,8 @@
 			children = (
 				17DBAD061B74B03B00B26A83 /* Info.plist */,
 				17DBAD071B74B03B00B26A83 /* main.m */,
+				17DB8B6D1B8B274600E02381 /* NSMutableArray+QueueStack.h */,
+				17DB8B6E1B8B274600E02381 /* NSMutableArray+QueueStack.m */,
 			);
 			name = "Supporting Files";
 			sourceTree = "<group>";
@@ -266,14 +280,17 @@
 			buildActionMask = 2147483647;
 			files = (
 				17D755601B79C5EB00385A30 /* SecondBedroom.xib in Resources */,
+				17DB8B6A1B8AB0A600E02381 /* SecondBedroom.plist in Resources */,
 				17DDCA0C1B787D6800AF415B /* 资源库 in Resources */,
 				17DD16511B75AC1200E0858C /* homeDemo.png in Resources */,
 				17DBAD111B74B03B00B26A83 /* Main.storyboard in Resources */,
+				17DB8B681B8AAFBA00E02381 /* ButleRoom.plist in Resources */,
 				17DBAD161B74B03B00B26A83 /* LaunchScreen.xib in Resources */,
 				17DDCA061B787A3B00AF415B /* LivingDiningRoom.xib in Resources */,
 				17DDCA0E1B788A4000AF415B /* NorthMainBedroom.xib in Resources */,
 				17DDCA111B78B22100AF415B /* PropertyConfig.plist in Resources */,
 				17DBAD131B74B03B00B26A83 /* Images.xcassets in Resources */,
+				17DB8B661B8AADCF00E02381 /* NorthMainBedroom.plist in Resources */,
 				17DC5B4B1B7B33760007C40B /* LivingDiningRoom.plist in Resources */,
 				17DBAD381B74B81000B26A83 /* APPChildViewController.xib in Resources */,
 				17D755621B79C62500385A30 /* ButleRoom.xib in Resources */,
@@ -296,6 +313,7 @@
 			files = (
 				17DBAD0E1B74B03B00B26A83 /* ViewController.m in Sources */,
 				17DBAD0B1B74B03B00B26A83 /* AppDelegate.m in Sources */,
+				17DB8B6F1B8B274600E02381 /* NSMutableArray+QueueStack.m in Sources */,
 				17DBAD081B74B03B00B26A83 /* main.m in Sources */,
 				17DC5B491B7B25690007C40B /* BLUIButton.m in Sources */,
 				17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */,

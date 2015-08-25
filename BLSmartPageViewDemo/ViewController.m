@@ -79,6 +79,8 @@
     [self.pageController didMoveToParentViewController:self];
     
     
+    
+    
 //    APPChildViewController *appChildViewControllerForGetWidget = [[APPChildViewController alloc] initWithNibName:@"LivingDiningRoom" bundle:nil];
 //   
 //    for (UIView *subView in appChildViewControllerForGetWidget.view.subviews)
