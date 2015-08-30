@@ -136,7 +136,7 @@
 -(NSDictionary *)popDataFromFIFOThreadSave
 {
     __block NSDictionary *dataCopy;
-    dispatch_sync(concurrentWriteToBusDataProcessQueue,
+    dispatch_barrier_sync(concurrentWriteToBusDataProcessQueue,
                   ^{
                       dataCopy = [self.transmitDataFIFO queuePop];
                   });
