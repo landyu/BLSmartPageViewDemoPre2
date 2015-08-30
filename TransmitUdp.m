@@ -13,7 +13,8 @@ NSTimer *udpHeartBeat;
 unsigned int CID = 0;
 unsigned char SC = 0;
 unsigned int connectStatus = 0;
-NSString *ipRouterHost = @"192.168.10.222";
+//NSString *ipRouterHost = @"192.168.10.222";
+NSString *ipRouterHost = @"192.168.10.193";
 NSInteger ipRouterHostPort = 3671;
 
 @interface TransmitUdp()
@@ -162,6 +163,34 @@ NSInteger ipRouterHostPort = 3671;
     
 }
 
+- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value
+{
+    if (connectStatus == 0)
+    {
+        return;
+    }
+    
+    //NSInteger outputValue = [value integerValue];
+    NSArray *groupAddressSplit = [groupAddress componentsSeparatedByString:@"/"];
+    
+    Byte sendByte[] = {0x06,0x10,0x04,0x20,0x00,0x15,0x04,CID,SC,0x00,0x11,0x00,0xbc,0xd0,0x00,0x00,0x18,0x00,0x01,0x00,0x81};
+    
+    NSMutableData *data = [[NSMutableData alloc] init];
+    
+    
+    sendByte[16] = ([[groupAddressSplit objectAtIndex:0] integerValue] << 4 ) | ([[groupAddressSplit objectAtIndex:1] integerValue]);
+    sendByte[17] = [[groupAddressSplit objectAtIndex:2] integerValue];
+    sendByte[20] = 0x80 | ([value integerValue] & 0x01);
+    
+    SC++;
+    data = [NSMutableData dataWithBytes:sendByte length:21];
+    
+    [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
+    NSLog(@"SENT (%i): Set Light A %u", (int)tag, sendByte[20] & 0x01);
+    tag++;
+
+}
+
 #pragma mark GCDAsyncUdpSocket Delegate
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
 {
@@ -233,8 +262,10 @@ withFilterContext:(id)filterContext
         {
             if (testByte[6] == CID)
             {
-                if (testByte[7] == 0x00) {
+                if (testByte[7] == 0x00)
+                {
                     //[self logMessage:FORMAT(@"Connection State Response OK  CID : %u", CID)];  //CID
+                    NSLog(@"Connection State Response OK  CID : %u", CID);  //CID
                     return;
                 }
                 else
@@ -260,21 +291,28 @@ withFilterContext:(id)filterContext
             NSLog(@"SENT (%i): Connection ACK CID %u  SC %u", (int)tag, CID, SC);
             tag++;
             
-            if ((testByte[16] == 0x18) && (testByte[17] == 0x0c))  //Light A State Response
-            {
-//                if ((testByte[20] & 0x01))  //ON
-//                {
-//                    [uibLightA setHighlighted:YES];
-//                    [uibLightA setSelected:YES];
-//                }
-//                else  //OFF
-//                {
-//                    [uibLightA setHighlighted:NO];
-//                    [uibLightA setSelected:NO];
-//                }
+            NSString *groupAddress = [[NSString alloc] initWithFormat:@"%d/%d/%d",testByte[16] >> 4, testByte[16] & 0x0F,testByte[17]];
+            NSString *value = [[NSString alloc] initWithFormat:@"%d",testByte[20] & 0x01];
+            NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddress, @"Address", value, @"Value",nil];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"RecvFromBus" object:self userInfo:eibBusDataDict];
+            
+//            //if ((testByte[16] == 0x18) && (testByte[17] == 0x0c))  //Light A State Response
+//            {
+////                if ((testByte[20] & 0x01))  //ON
+////                {
+////                    [uibLightA setHighlighted:YES];
+////                    [uibLightA setSelected:YES];
+////                }
+////                else  //OFF
+////                {
+////                    [uibLightA setHighlighted:NO];
+////                    [uibLightA setSelected:NO];
+////                }
+////                
+////                [self logMessage:FORMAT(@"setHighlighted %u", (testByte[20] & 0x01))];
+//                ß
 //                
-//                [self logMessage:FORMAT(@"setHighlighted %u", (testByte[20] & 0x01))];
-            }
+//            }
             
             
         }

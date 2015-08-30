@@ -9,12 +9,12 @@
 		<key>WriteToGroupAddress</key>
 		<dict>
 			<key>0</key>
-			<string>0/0/1</string>
+			<string>0/0/5</string>
 		</dict>
 		<key>ReadFromGroupAddress</key>
 		<dict>
 			<key>0</key>
-			<string>0/0/4</string>
+			<string>0/0/6</string>
 		</dict>
 	</dict>
 	<key>床头灯右</key>
@@ -24,12 +24,12 @@
 		<key>WriteToGroupAddress</key>
 		<dict>
 			<key>0</key>
-			<string>0/0/3</string>
+			<string>0/0/7</string>
 		</dict>
 		<key>ReadFromGroupAddress</key>
 		<dict>
 			<key>0</key>
-			<string>0/0/4</string>
+			<string>0/0/8</string>
 		</dict>
 	</dict>
 </dict>

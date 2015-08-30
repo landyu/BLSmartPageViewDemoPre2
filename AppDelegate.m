@@ -8,6 +8,7 @@
 
 #import "AppDelegate.h"
 #import "TransmitUdp.h"
+#import "Utils.h"
 
 @interface AppDelegate ()
 {
@@ -21,7 +22,6 @@
 @implementation AppDelegate
 @synthesize viewControllerNavigationItemSharedInstance;
 @synthesize sceneListDictionarySharedInstance;
-@synthesize transmitQueue;
 @synthesize transmitDataFIFO;
 
 
@@ -30,30 +30,38 @@
     // Override point for customization after application launch.
     viewControllerNavigationItemSharedInstance = nil;
     sceneListDictionarySharedInstance = nil;
-    transmitQueue = nil;
-    transmitQueue = dispatch_queue_create("tansmit queue", DISPATCH_QUEUE_SERIAL);
+    concurrentWriteToBusDataProcessQueue = nil;
+    concurrentWriteToBusDataProcessQueue = dispatch_queue_create("BL.BLSmartPageViewDemo.WriteToBusDataProcessQueue", DISPATCH_QUEUE_CONCURRENT);
+    serialUdpWriteToBusQueue = nil;
+    serialUdpWriteToBusQueue = dispatch_queue_create("BL.BLSmartPageViewDemo.UdpWriteToBusQueue", DISPATCH_QUEUE_SERIAL);
     transmitDataFIFO = nil;
     transmitDataFIFO = [NSMutableArray array];
+    /// Notification when content updates (i.e. Download finishes)
+    TransmitQueueDataUpdateNotification = @"BL.BLSmartPageViewDemo.TransmitQueueDataUpdate";
     
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(writeToBus:) name:TransmitQueueDataUpdateNotification object:nil];
     
+    transmitUdpHandle = [TransmitUdp sharedInstance];
     
-    if ((transmitDataFIFO != nil) && (transmitQueue != nil))
-    {
-        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
-            // 耗时的操作
-            while (TRUE)
-            {
-                if ([transmitDataFIFO count] == 0)
-                {
-                    [NSThread sleepForTimeInterval:0.01];
-                    continue;
-                }
-                //NSDictionary *transmitData = [transmitDataFIFO queuePop];
-                NSLog(@"transmitData = %@", [transmitDataFIFO queuePop]);
-            };
-        });
-
-    }
+//    if ((transmitDataFIFO != nil) && (transmitQueue != nil))
+//    {
+//        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
+//            // 耗时的操作
+//            while (TRUE)
+//            {
+//                if ([transmitDataFIFO count] == 0)
+//                {
+//                    [NSThread sleepForTimeInterval:0.01];
+//                    continue;
+//                }
+//                NSDictionary *transmitData = [transmitDataFIFO queuePop];
+//                //NSLog(@"transmitData = %@", [transmitDataFIFO queuePop]);
+//
+//                [transmitUdpHandle sendKnxDataWithGroupAddress:[transmitData objectForKey:@"GroupAddress"] objectValue:[transmitData objectForKey:@"Value"]];
+//            };
+//        });
+//
+//    }
         return YES;
 }
 
@@ -96,5 +104,49 @@
 
     
 }
+
+- (void)writeToBus:(NSNotification*) notification
+{
+    
+    while ([transmitDataFIFO count])
+    {
+        NSDictionary *dataWriteToBus = [self popDataFromFIFOThreadSave];
+        //NSLog(@"transmitData = %@", [transmitDataFIFO queuePop]);
+        dispatch_async(serialUdpWriteToBusQueue,
+                       ^{
+                           [transmitUdpHandle sendKnxDataWithGroupAddress:[dataWriteToBus objectForKey:@"GroupAddress"] objectValue:[dataWriteToBus objectForKey:@"Value"]];
+                       });
+        
+    };
+}
+
+-(void)pushDataToFIFOThreadSaveAndSendNotificationAsync:(id)value
+{
+    dispatch_barrier_async(concurrentWriteToBusDataProcessQueue,
+    ^{
+        [self.transmitDataFIFO queuePush:value];
+        dispatch_async([Utils GlobalMainQueue],
+                       ^{
+                           [self postTransmitQueueDataUpdateNotification];
+                       });
+    });
+
+}
+
+-(NSDictionary *)popDataFromFIFOThreadSave
+{
+    __block NSDictionary *dataCopy;
+    dispatch_sync(concurrentWriteToBusDataProcessQueue,
+                  ^{
+                      dataCopy = [self.transmitDataFIFO queuePop];
+                  });
+    return dataCopy;
+}
+
+-(void)postTransmitQueueDataUpdateNotification
+{
+    [[NSNotificationCenter defaultCenter] postNotificationName:TransmitQueueDataUpdateNotification object:nil];
+}
+
 
 @end

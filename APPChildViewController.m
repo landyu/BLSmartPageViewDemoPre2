@@ -14,8 +14,9 @@
 
 @interface APPChildViewController ()
 {
-    dispatch_queue_t transmitActionQueue;
-    NSMutableArray * childTransmitDataFIFO;
+    //dispatch_queue_t transmitActionQueue;
+    //NSMutableArray * childTransmitDataFIFO;
+    AppDelegate *appDelegate;
 }
 
 @end
@@ -32,9 +33,9 @@
     
     NSLog(@"view count = %d", self.view.subviews.count);
     
-    AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
-    transmitActionQueue = appDelegate.transmitQueue;
-    childTransmitDataFIFO = appDelegate.transmitDataFIFO;
+    appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
+    //transmitActionQueue = appDelegate.transmitQueue;
+    //childTransmitDataFIFO = appDelegate.transmitDataFIFO;
     
     
     //appDelegate.viewControllerNavigationItemSharedInstance = self.viewControllerNavigationItem;
@@ -243,13 +244,16 @@
 - (void) blUIButtonTransmitActionWithDestGroupAddress:(NSString *)destGroupAddress value:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
 {
     //NSLog(@"destGroupAddress = %@, value = %d, name = %@, valueLength = %@", destGroupAddress, value, name, valueLength);
-    if ((transmitActionQueue == nil) || (childTransmitDataFIFO == nil))
-    {
-        return;
-    }
+//    if ((transmitActionQueue == nil) || (childTransmitDataFIFO == nil))
+//    {
+//        return;
+//    }
     NSDictionary *transmitDataDict = [[NSDictionary alloc] initWithObjectsAndKeys:destGroupAddress, @"GroupAddress",  [NSString stringWithFormat: @"%d", value], @"Value", valueLength, @"ValueLength", nil];
-    dispatch_async(transmitActionQueue, ^{ NSLog(@"destGroupAddress = %@, value = %d, name = %@, valueLength = %@", destGroupAddress, value, name, valueLength); });
-    dispatch_async(transmitActionQueue, ^{ [childTransmitDataFIFO queuePush:transmitDataDict];});
+    //dispatch_async(transmitActionQueue, ^{ NSLog(@"destGroupAddress = %@, value = %d, name = %@, valueLength = %@", destGroupAddress, value, name, valueLength); });
+    //dispatch_async(transmitActionQueue, ^{ [childTransmitDataFIFO queuePush:transmitDataDict];});
+    
+    //-(void)pushDataToFIFOThreadSaveAndSendNotificationAsync:(id)value
+    [appDelegate pushDataToFIFOThreadSaveAndSendNotificationAsync:transmitDataDict];
 }
 
 @end

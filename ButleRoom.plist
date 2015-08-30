@@ -9,12 +9,12 @@
 		<key>WriteToGroupAddress</key>
 		<dict>
 			<key>0</key>
-			<string>0/0/1</string>
+			<string>0/0/13</string>
 		</dict>
 		<key>ReadFromGroupAddress</key>
 		<dict>
 			<key>0</key>
-			<string>0/0/4</string>
+			<string>0/0/14</string>
 		</dict>
 	</dict>
 </dict>
