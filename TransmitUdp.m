@@ -163,7 +163,7 @@ NSInteger ipRouterHostPort = 3671;
     
 }
 
-- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value
+- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType
 {
     if (connectStatus == 0)
     {
@@ -180,7 +180,16 @@ NSInteger ipRouterHostPort = 3671;
     
     sendByte[16] = ([[groupAddressSplit objectAtIndex:0] integerValue] << 4 ) | ([[groupAddressSplit objectAtIndex:1] integerValue]);
     sendByte[17] = [[groupAddressSplit objectAtIndex:2] integerValue];
-    sendByte[20] = 0x80 | ([value integerValue] & 0x01);
+    sendByte[18] = 1;//value length
+    if ([commandType isEqualToString:@"Write"])
+    {
+        sendByte[20] = 0x80 | ([value integerValue] & 0x01);
+    }
+    else if ([commandType isEqualToString:@"Read"])
+    {
+        sendByte[20] = 0x00 | ([value integerValue] & 0x01);
+    }
+    
     
     SC++;
     data = [NSMutableData dataWithBytes:sendByte length:21];

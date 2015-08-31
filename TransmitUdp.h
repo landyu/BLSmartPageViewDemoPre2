@@ -17,6 +17,6 @@
 - (BOOL)udpSocketisClosed;
 - (void)connectDevice;
 - (void)disconnectDevice;
-- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value;
+- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType;
 
 @end

@@ -114,7 +114,7 @@
         //NSLog(@"transmitData = %@", [transmitDataFIFO queuePop]);
         dispatch_async(serialUdpWriteToBusQueue,
                        ^{
-                           [transmitUdpHandle sendKnxDataWithGroupAddress:[dataWriteToBus objectForKey:@"GroupAddress"] objectValue:[dataWriteToBus objectForKey:@"Value"]];
+                               [transmitUdpHandle sendKnxDataWithGroupAddress:[dataWriteToBus objectForKey:@"GroupAddress"] objectValue:[dataWriteToBus objectForKey:@"Value"] valueLength:[dataWriteToBus objectForKey:@"ValueLength"] commandType:[dataWriteToBus objectForKey:@"CommandType"]];
                        });
         
     };

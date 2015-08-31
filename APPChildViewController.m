@@ -256,4 +256,37 @@
     [appDelegate pushDataToFIFOThreadSaveAndSendNotificationAsync:transmitDataDict];
 }
 
+-(void) getAllWidgetsStatus
+{
+    NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    
+    if (!path) {
+        return;
+    }
+    NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:path];
+    
+    
+    //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
+    [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+     {
+         
+         NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
+         [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+          {
+              if ([key isEqualToString:@"ReadFromGroupAddress"])
+              {
+                  NSString *valueLength = [[NSString alloc]initWithString:objectPropertyDict[@"ValueLength"]];
+                  NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:objectPropertyDict[key]];
+                  [readFromGroupAddressDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                   {
+                       NSLog(@"readFromGroupAddressDict[%@] = %@", key, readFromGroupAddressDict[key]);
+
+                       NSDictionary *transmitDataDict = [[NSDictionary alloc] initWithObjectsAndKeys:readFromGroupAddressDict[key], @"GroupAddress", valueLength, @"ValueLength", @"Read", @"CommandType", nil];
+                       [appDelegate pushDataToFIFOThreadSaveAndSendNotificationAsync:transmitDataDict];
+                   }];
+              }
+          }];
+     }];
+}
+
 @end
