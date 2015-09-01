@@ -7,7 +7,7 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BLUIButton.h"
+
 
 @interface APPChildViewController : UIViewController
 
@@ -16,7 +16,7 @@
 @property (assign, nonatomic) NSInteger index;
 @property (copy, nonatomic) NSString* nibName;
 
-- (void)buttonPressd:(BLUIButton *)sender;
+//- (void)switchButtonPressd:(BLUISwitch *)sender;
 
 
 @end

@@ -8,7 +8,7 @@
 
 #import <UIKit/UIKit.h>
 
-@interface BLUIButton : UIButton
+@interface BLUISwitch : UIButton
 
 @property (nonatomic,copy)NSString *objName;
 //@property (nonatomic,strong) NSNumber *downCommandType;

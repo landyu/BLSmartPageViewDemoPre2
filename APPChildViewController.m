@@ -10,6 +10,8 @@
 #import "ViewController.h"
 #import "AppDelegate.h"
 #import "Utils.h"
+#import "BLUISwitch.h"
+#import "BLUISceneButton.h"
 
 
 
@@ -18,6 +20,8 @@
     //dispatch_queue_t transmitActionQueue;
     //NSMutableArray * childTransmitDataFIFO;
     AppDelegate *appDelegate;
+    //NSString *widgetPlistPath;
+    NSMutableDictionary *nibPlistDict;
 }
 
 @end
@@ -37,6 +41,9 @@
     //transmitActionQueue = appDelegate.transmitQueue;
     //childTransmitDataFIFO = appDelegate.transmitDataFIFO;
     
+    NSString *widgetPlistPath = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
+    
     dispatch_async([Utils GlobalUserInitiatedQueue],
                    ^{
                        [self getAllWidgetsStatus];
@@ -49,12 +56,19 @@
     
     for (UIView *subView in self.view.subviews)
     {
-        if ([subView isMemberOfClass:[BLUIButton class]])
+        if ([subView isMemberOfClass:[BLUISwitch class]])
         {
-            BLUIButton *button = (BLUIButton *) subView;
+            BLUISwitch *switchButton = (BLUISwitch *) subView;
             
-            [button addTarget:self action:@selector(buttonPressd:) forControlEvents:UIControlEventTouchUpInside];
+            [switchButton addTarget:self action:@selector(switchButtonPressd:) forControlEvents:UIControlEventTouchUpInside];
             
+        }
+        else if ([subView isMemberOfClass:[BLUISceneButton class]])
+        {
+            BLUISceneButton *sceneButton = (BLUISceneButton *) subView;
+            
+            [sceneButton addTarget:self action:@selector(sceneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            [self parseSceneButtonWithNibPlistDict:nibPlistDict object:sceneButton];
         }
         
     }
@@ -77,36 +91,21 @@
 }
 */
 
+#pragma mark Switch Button
 
-//- (void)addChildViewController:(UIViewController *)childController
-//{
-//    [self addChildViewController:childController];
-//}
-
-//- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
-//{
-//    
-//    NSLog(@"111111111");
-////    if (completed) {
-////        int currentIndex = ((UIViewController *)[self.pageController.viewControllers objectAtIndex:0]).view.tag;
-////        self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #%d", currentIndex];
-////    }
-//}
-
-
-- (void)buttonPressd:(BLUIButton *)sender {
+- (void)switchButtonPressd:(BLUISwitch *)sender {
     
     //__block NSInteger transmitValue;
     
-    NSLog(@"buttonPressd #%ld, objName = %@", (long)self.index, sender.objName);
+    NSLog(@"SwitchButtonPressd #%ld, objName = %@", (long)self.index, sender.objName);
     
     
-    NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
-    if (!path) {
+    if (!nibPlistDict) {
         return;
     }
-    NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:path];
+    //NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     
     //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
@@ -134,7 +133,7 @@
      }];
 }
 
-- (void) parseDataForPreTransmitWithObject:(BLUIButton *)obj destGroupAddress:(NSString *)destGroupAddress buttonName:(NSString *)buttonName valueLength:(NSString *)valueLength objectPropertyDictionay:(NSMutableDictionary *)objectPropertyDict
+- (void) parseDataForPreTransmitWithObject:(BLUISwitch *)obj destGroupAddress:(NSString *)destGroupAddress buttonName:(NSString *)buttonName valueLength:(NSString *)valueLength objectPropertyDictionay:(NSMutableDictionary *)objectPropertyDict
 {
     //NSLog(@"writeToGroupAddressDict[%@] = %@", key, writeToGroupAddressDict[key]);
     __block NSInteger transmitValue;
@@ -169,7 +168,56 @@
     [self blUIButtonTransmitActionWithDestGroupAddress:destGroupAddress value:transmitValue buttonName:buttonName valueLength:valueLength];
 }
 
+#pragma mark Scene Button
+- (void) sceneButtonPressed:(BLUISceneButton *)sender
+{
+    //__block NSInteger transmitValue;
+    
+    NSLog(@"SceneButtonPressd #%ld, objName = %@", (long)self.index, sender.objName);
+    
+    
+    //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    dispatch_async([Utils GlobalBackgroundQueue],
+    ^{
+        [sender.sceneSequenceMutableDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+         {
+             NSDictionary *sceneDict = (NSDictionary *)obj;
+             [self blUIButtonTransmitActionWithDestGroupAddress:sceneDict[@"WriteToGroupAddress"] value:[sceneDict[@"Value"] integerValue] buttonName:sender.objName valueLength:sceneDict[@"ValueLength"]];
+             [NSThread sleepForTimeInterval:[sender.sceneDelayDuration doubleValue]];
+         }];
+    });
+    
+}
 
+- (void) parseSceneButtonWithNibPlistDict:(NSMutableDictionary *)xibPlistDict object:(BLUISceneButton *)sceneButton
+{
+    if (!nibPlistDict) {
+        return;
+    }
+
+    [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+     {
+         
+         if ([key isEqualToString:sceneButton.objName])
+         {
+             NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
+             sceneButton.sceneDelayDuration = [NSNumber numberWithFloat:[objectPropertyDict[@"SceneDelayDuration"] floatValue]];
+             sceneButton.sceneSequenceMutableDict = [[NSMutableDictionary alloc] initWithDictionary:objectPropertyDict[@"Scene"]];
+             //sceneButton.sceneCount = [sceneButton.sceneSequenceMutableDict count];
+         }
+     }];
+
+}
+
+#pragma mark Send Write Command
+- (void) blUIButtonTransmitActionWithDestGroupAddress:(NSString *)destGroupAddress value:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
+{
+
+    NSDictionary *transmitDataDict = [[NSDictionary alloc] initWithObjectsAndKeys:destGroupAddress, @"GroupAddress",  [NSString stringWithFormat: @"%d", value], @"Value", valueLength, @"ValueLength", @"Write", @"CommandType", nil];
+    [appDelegate pushDataToFIFOThreadSaveAndSendNotificationAsync:transmitDataDict];
+}
+
+#pragma mark Receive From Bus
 - (void) recvFromBus: (NSNotification*) notification
 {
     NSDictionary *dict = [notification userInfo];
@@ -185,12 +233,12 @@
 
 - (void)actionWithGroupAddress:(NSString *)groupAddress withObjectValue:(NSInteger)objectValue
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
-    if (!path) {
+    if (!nibPlistDict) {
         return;
     }
-    NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:path];
+    //NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     
     //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
@@ -227,16 +275,16 @@
 {
     for (UIView *subView in self.view.subviews)
     {
-        if ([subView isMemberOfClass:[BLUIButton class]])
+        if ([subView isMemberOfClass:[BLUISwitch class]])
         {
-            BLUIButton *button = (BLUIButton *) subView;
+            BLUISwitch *button = (BLUISwitch *) subView;
             [self blUIButtonUpdateActionWithButtonObject:button buttonValue:objectValue buttonName:objectName valueLength:valueLength];
         }
         
     }
 }
 
-- (void) blUIButtonUpdateActionWithButtonObject:(BLUIButton *)button buttonValue:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
+- (void) blUIButtonUpdateActionWithButtonObject:(BLUISwitch *)button buttonValue:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
 {
     if ([button.objName isEqualToString:name])
     {
@@ -255,29 +303,16 @@
 
 }
 
-- (void) blUIButtonTransmitActionWithDestGroupAddress:(NSString *)destGroupAddress value:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
-{
-    //NSLog(@"destGroupAddress = %@, value = %d, name = %@, valueLength = %@", destGroupAddress, value, name, valueLength);
-//    if ((transmitActionQueue == nil) || (childTransmitDataFIFO == nil))
-//    {
-//        return;
-//    }
-    NSDictionary *transmitDataDict = [[NSDictionary alloc] initWithObjectsAndKeys:destGroupAddress, @"GroupAddress",  [NSString stringWithFormat: @"%d", value], @"Value", valueLength, @"ValueLength", @"Write", @"CommandType", nil];
-    //dispatch_async(transmitActionQueue, ^{ NSLog(@"destGroupAddress = %@, value = %d, name = %@, valueLength = %@", destGroupAddress, value, name, valueLength); });
-    //dispatch_async(transmitActionQueue, ^{ [childTransmitDataFIFO queuePush:transmitDataDict];});
-    
-    //-(void)pushDataToFIFOThreadSaveAndSendNotificationAsync:(id)value
-    [appDelegate pushDataToFIFOThreadSaveAndSendNotificationAsync:transmitDataDict];
-}
+#pragma mark Init Widgets Status
 
 -(void) getAllWidgetsStatus
 {
-    NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
+    //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
-    if (!path) {
+    if (!nibPlistDict) {
         return;
     }
-    NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:path];
+    //NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     
     //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];

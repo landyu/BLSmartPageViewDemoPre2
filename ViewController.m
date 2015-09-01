@@ -60,13 +60,16 @@
     AppDelegate *appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     appDelegate.viewControllerNavigationItemSharedInstance = self.viewControllerNavigationItem;
     
-    self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #0"];
+    //self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #0"];
+    
     
     PropertyConfigPhrase *sceneConfig = [[PropertyConfigPhrase alloc] init];
     [sceneConfig sceneListDictionary];
     
     self.sceneListDict = appDelegate.sceneListDictionarySharedInstance;
     sceneListCount = [self.sceneListDict count];
+    
+    self.viewControllerNavigationItem.title = [self.sceneListDict objectForKey:@"0"];
     
     APPChildViewController *initialViewController = [self viewControllerAtIndex:0];
     
@@ -188,8 +191,8 @@
     if (completed) {
         int currentIndex = ((UIViewController *)[pageViewController.viewControllers objectAtIndex:0]).view.tag;
         
-        self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #%d", currentIndex];
-        
+        //self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #%d", currentIndex];
+        self.viewControllerNavigationItem.title = [self.sceneListDict objectForKey:[NSString stringWithFormat:@"%d", currentIndex]];
         //NSLog(@"completed index %d", currentIndex);
     }
 }
@@ -204,20 +207,6 @@
     // The selected item reflected in the page indicator.
     return 0;
 }
-
-- (void)initObjectTable
-{
-    objectTable = [[NSMutableArray alloc] initWithObjects:@"1", @"uRM-4v-WXV",nil];
-}
-
-- (void)initAddressTable
-{
-    writeToAddressTable = [[NSMutableArray alloc] initWithObjects:@"1",@"0/0/1", nil];
-    
-    readFromAddressTable = [[NSMutableArray alloc] initWithObjects:@"1",@"0/0/2", nil];
-}
-
-
 
 
 - (IBAction)recvFromBusBtn:(id)sender

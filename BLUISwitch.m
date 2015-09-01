@@ -6,9 +6,9 @@
 //  Copyright (c) 2015年 Landyu. All rights reserved.
 //
 
-#import "BLUIButton.h"
+#import "BLUISwitch.h"
 
-@implementation BLUIButton
+@implementation BLUISwitch
 
 /*
 // Only override drawRect: if you perform custom drawing.
