@@ -2,6 +2,18 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>场景1</key>
+	<dict>
+		<key>WriteToValue</key>
+		<string>2</string>
+		<key>ValueLength</key>
+		<string>1Byte</string>
+		<key>WriteToGroupAddress</key>
+		<dict>
+			<key>0</key>
+			<string>1/0/0</string>
+		</dict>
+	</dict>
 	<key>床头灯左</key>
 	<dict>
 		<key>ValueLength</key>

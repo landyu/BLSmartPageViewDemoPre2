@@ -224,6 +224,6 @@
 {
     
     NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddressField.text, @"Address", valueField.text, @"Value",nil];
-    [[NSNotificationCenter defaultCenter] postNotificationName:@"RecvFromBus" object:self userInfo:eibBusDataDict];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BL.BLSmartPageViewDemo.RecvFromBus" object:self userInfo:eibBusDataDict];
 }
 @end

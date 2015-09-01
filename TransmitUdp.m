@@ -165,6 +165,8 @@ NSInteger ipRouterHostPort = 3671;
 
 - (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType
 {
+    NSInteger dataLength = 0;
+    
     if (connectStatus == 0)
     {
         return;
@@ -173,29 +175,53 @@ NSInteger ipRouterHostPort = 3671;
     //NSInteger outputValue = [value integerValue];
     NSArray *groupAddressSplit = [groupAddress componentsSeparatedByString:@"/"];
     
-    Byte sendByte[] = {0x06,0x10,0x04,0x20,0x00,0x15,0x04,CID,SC,0x00,0x11,0x00,0xbc,0xd0,0x00,0x00,0x18,0x00,0x01,0x00,0x81};
+    Byte sendByte[] = {0x06,0x10,0x04,0x20,0x00,0x15,0x04,CID,SC,0x00,0x11,0x00,0xbc,0xd0,0x00,0x00,0x18,0x00,0x01,0x00,0x81,0x00};
     
     NSMutableData *data = [[NSMutableData alloc] init];
     
     
-    sendByte[16] = ([[groupAddressSplit objectAtIndex:0] integerValue] << 4 ) | ([[groupAddressSplit objectAtIndex:1] integerValue]);
+    sendByte[16] = ([[groupAddressSplit objectAtIndex:0] integerValue] << 3 ) | ([[groupAddressSplit objectAtIndex:1] integerValue] & 0x07);
     sendByte[17] = [[groupAddressSplit objectAtIndex:2] integerValue];
-    sendByte[18] = 1;//value length
+    
     if ([commandType isEqualToString:@"Write"])
     {
-        sendByte[20] = 0x80 | ([value integerValue] & 0x01);
+        if ([valueLength isEqualToString:@"1Bit"])
+        {
+            sendByte[5] = 0x15;//package length
+            sendByte[18] = 1;//value length
+            sendByte[20] = 0x80 | ([value integerValue] & 0x01);
+            dataLength = 21;
+            //SC++;
+        }
+        else if ([valueLength isEqualToString:@"1Byte"])
+        {
+            sendByte[5] = 0x16;//package length
+            sendByte[18] = 2;//value length
+            sendByte[20] = 0x80;
+            sendByte[21] = [value integerValue];
+            dataLength = 22;
+            //SC++;
+        }
+        
     }
     else if ([commandType isEqualToString:@"Read"])
     {
-        sendByte[20] = 0x00 | ([value integerValue] & 0x01);
+        //if ([valueLength isEqualToString:@"1Bit"])
+        {
+            sendByte[5] = 0x15;//package length
+            sendByte[18] = 1;//value length
+            sendByte[20] = 0x00 | ([value integerValue] & 0x01);
+            dataLength = 21;
+            //SC++;
+        }
     }
     
     
     SC++;
-    data = [NSMutableData dataWithBytes:sendByte length:21];
+    data = [NSMutableData dataWithBytes:sendByte length:dataLength];
     
     [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
-    NSLog(@"SENT (%i): Set Light A %u", (int)tag, sendByte[20] & 0x01);
+    //NSLog(@"SENT (%i): Set Light A %u", (int)tag, sendByte[20] & 0x01);
     tag++;
 
 }
@@ -300,10 +326,19 @@ withFilterContext:(id)filterContext
             NSLog(@"SENT (%i): Connection ACK CID %u  SC %u", (int)tag, CID, SC);
             tag++;
             
-            NSString *groupAddress = [[NSString alloc] initWithFormat:@"%d/%d/%d",testByte[16] >> 4, testByte[16] & 0x0F,testByte[17]];
-            NSString *value = [[NSString alloc] initWithFormat:@"%d",testByte[20] & 0x01];
+            NSString *groupAddress = [[NSString alloc] initWithFormat:@"%d/%d/%d",(testByte[16] >> 3), testByte[16] & 0x07,testByte[17]];
+            NSString *value = nil;
+            if (testByte[18] == 1)
+            {
+                value = [[NSString alloc] initWithFormat:@"%d",testByte[20] & 0x01];
+            }
+            else if(testByte[18] == 2)
+            {
+                value = [[NSString alloc] initWithFormat:@"%d",testByte[21]];
+            }
+            
             NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddress, @"Address", value, @"Value",nil];
-            [[NSNotificationCenter defaultCenter] postNotificationName:@"RecvFromBus" object:self userInfo:eibBusDataDict];
+            [[NSNotificationCenter defaultCenter] postNotificationName:@"BL.BLSmartPageViewDemo.RecvFromBus" object:self userInfo:eibBusDataDict];
             
 //            //if ((testByte[16] == 0x18) && (testByte[17] == 0x0c))  //Light A State Response
 //            {

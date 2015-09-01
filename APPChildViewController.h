@@ -15,10 +15,8 @@
 
 @property (assign, nonatomic) NSInteger index;
 @property (copy, nonatomic) NSString* nibName;
-@property (strong, nonatomic) IBOutlet UILabel *screenNumber;
-- (IBAction)testButton:(UIButton *)sender;
 
-- (IBAction)buttonPressd:(BLUIButton *)sender;
+- (void)buttonPressd:(BLUIButton *)sender;
 
 
 @end

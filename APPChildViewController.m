@@ -9,6 +9,7 @@
 #import "APPChildViewController.h"
 #import "ViewController.h"
 #import "AppDelegate.h"
+#import "Utils.h"
 
 
 
@@ -27,7 +28,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
-    self.screenNumber.text = [NSString stringWithFormat:@"Screen #%ld", (long)self.index];
 
     self.view.tag = self.index;
     
@@ -37,10 +37,15 @@
     //transmitActionQueue = appDelegate.transmitQueue;
     //childTransmitDataFIFO = appDelegate.transmitDataFIFO;
     
+    dispatch_async([Utils GlobalUserInitiatedQueue],
+                   ^{
+                       [self getAllWidgetsStatus];
+                   });
+    
     
     //appDelegate.viewControllerNavigationItemSharedInstance = self.viewControllerNavigationItem;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvFromBus:) name:@"RecvFromBus" object:nil];
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvFromBus:) name:@"BL.BLSmartPageViewDemo.RecvFromBus" object:nil];
     
     for (UIView *subView in self.view.subviews)
     {
@@ -88,13 +93,10 @@
 ////    }
 //}
 
-- (IBAction)testButton:(UIButton *)sender {
-    NSLog(@"Screen #%ld", (long)self.index);
-}
 
-- (IBAction)buttonPressd:(BLUIButton *)sender {
+- (void)buttonPressd:(BLUIButton *)sender {
     
-    __block NSInteger transmitValue;
+    //__block NSInteger transmitValue;
     
     NSLog(@"buttonPressd #%ld, objName = %@", (long)self.index, sender.objName);
     
@@ -124,35 +126,47 @@
                       NSMutableDictionary *writeToGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:objectPropertyDict[key]];
                       [writeToGroupAddressDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
                        {
-                           //NSLog(@"writeToGroupAddressDict[%@] = %@", key, writeToGroupAddressDict[key]);
-                           if ([valueLength isEqualToString:@"1Bit"])
-                           {
-                               if ([sender isSelected])
-                               {
-                                   transmitValue = 0;
-                               }
-                               else
-                               {
-                                   transmitValue = 1;
-                               }
-                               [self blUIButtonTransmitActionWithDestGroupAddress:writeToGroupAddressDict[key] value:transmitValue buttonName:sender.objName valueLength:valueLength];
-                           }
+                           [self parseDataForPreTransmitWithObject:sender destGroupAddress:writeToGroupAddressDict[key] buttonName:sender.objName valueLength:valueLength objectPropertyDictionay:objectPropertyDict];
                        }];
                   }
               }];
          }
-         
-
      }];
+}
+
+- (void) parseDataForPreTransmitWithObject:(BLUIButton *)obj destGroupAddress:(NSString *)destGroupAddress buttonName:(NSString *)buttonName valueLength:(NSString *)valueLength objectPropertyDictionay:(NSMutableDictionary *)objectPropertyDict
+{
+    //NSLog(@"writeToGroupAddressDict[%@] = %@", key, writeToGroupAddressDict[key]);
+    __block NSInteger transmitValue;
     
-//    if (sender.selected == YES)
-//    {
-//        [sender setSelected:NO];
-//    }
-//    else
-//    {
-//        [sender setSelected:YES];
-//    }
+    if ([valueLength isEqualToString:@"1Bit"])
+    {
+        if ([obj isSelected])
+        {
+            transmitValue = 0;
+        }
+        else
+        {
+            transmitValue = 1;
+        }
+        
+    }
+    else if([valueLength isEqualToString:@"1Byte"])
+    {
+        [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+         {
+             if ([key isEqualToString:@"WriteToValue"])
+             {
+                 transmitValue = [(NSString *)obj integerValue];
+             }
+         }];
+    }
+    else
+    {
+        return;
+    }
+    
+    [self blUIButtonTransmitActionWithDestGroupAddress:destGroupAddress value:transmitValue buttonName:buttonName valueLength:valueLength];
 }
 
 
@@ -248,7 +262,7 @@
 //    {
 //        return;
 //    }
-    NSDictionary *transmitDataDict = [[NSDictionary alloc] initWithObjectsAndKeys:destGroupAddress, @"GroupAddress",  [NSString stringWithFormat: @"%d", value], @"Value", valueLength, @"ValueLength", nil];
+    NSDictionary *transmitDataDict = [[NSDictionary alloc] initWithObjectsAndKeys:destGroupAddress, @"GroupAddress",  [NSString stringWithFormat: @"%d", value], @"Value", valueLength, @"ValueLength", @"Write", @"CommandType", nil];
     //dispatch_async(transmitActionQueue, ^{ NSLog(@"destGroupAddress = %@, value = %d, name = %@, valueLength = %@", destGroupAddress, value, name, valueLength); });
     //dispatch_async(transmitActionQueue, ^{ [childTransmitDataFIFO queuePush:transmitDataDict];});
     
