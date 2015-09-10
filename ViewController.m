@@ -48,6 +48,8 @@
     
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
+    //self.pageController
+    
     self.pageController.dataSource = self;
     self.pageController.delegate = self;
     //[[self.pageController view] setFrame:[[self view] bounds]];
@@ -173,6 +175,8 @@
     //self.viewControllerNavigationItem.title = [NSString stringWithFormat:@"Screen #%ld", (long)index];
     childViewController.index = index;
     childViewController.nibName = [self.sceneListDict valueForKey:[NSString stringWithFormat: @"%d", index]];
+    childViewController.pageController = self.pageController;
+    childViewController.pageControllerDataSource = self;
     //[childViewController addChildViewController:self.pageController];
     
     return childViewController;

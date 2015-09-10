@@ -2,6 +2,31 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
+	<key>窗帘</key>
+	<dict>
+		<key>YarnCurtain</key>
+		<dict>
+			<key>PositionStatus</key>
+			<string>4/0/7</string>
+			<key>MoveToPosition</key>
+			<string>4/0/6</string>
+			<key>Stop</key>
+			<string>4/0/5</string>
+			<key>OpenClose</key>
+			<string>4/0/4</string>
+		</dict>
+		<key>ClothCurtain</key>
+		<dict>
+			<key>HeightStatus</key>
+			<string>4/0/3</string>
+			<key>MoveToPosition</key>
+			<string>4/0/2</string>
+			<key>Stop</key>
+			<string>4/0/1</string>
+			<key>OpenClose</key>
+			<string>4/0/0</string>
+		</dict>
+	</dict>
 	<key>床头灯左</key>
 	<dict>
 		<key>ValueLength</key>

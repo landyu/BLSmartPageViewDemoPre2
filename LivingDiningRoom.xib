@@ -17,7 +17,7 @@
                 <imageView userInteractionEnabled="NO" tag="1" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="BG_Blue.png" translatesAutoresizingMaskIntoConstraints="NO" id="6hx-bR-5VM">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="703"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="餐厅2x.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lsu-ME-9SQ">
+                <imageView userInteractionEnabled="NO" tag="2" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="餐厅.png" translatesAutoresizingMaskIntoConstraints="NO" id="Lsu-ME-9SQ">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="703"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" reversesTitleShadowWhenHighlighted="YES" adjustsImageWhenDisabled="NO" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="0kO-aW-4vG" userLabel="台灯2" customClass="BLUISwitch">
@@ -49,6 +49,6 @@
         <image name="BG_Blue.png" width="1024" height="768"/>
         <image name="off.png" width="50" height="50"/>
         <image name="on.png" width="50" height="50"/>
-        <image name="餐厅2x.png" width="1654" height="1051"/>
+        <image name="餐厅.png" width="827" height="526"/>
     </resources>
 </document>

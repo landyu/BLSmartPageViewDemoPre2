@@ -165,6 +165,13 @@ NSInteger ipRouterHostPort = 3671;
 
 - (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType
 {
+    
+    //                           0           1           2           3           4           5           6           7           8           9
+    unsigned char eibIntValue[72] = {0x00, 0x00, 0x00, 0x64, 0x08, 0x64, 0x01, 0x2C, 0x10, 0x64, 0x01, 0xF4, 0x02, 0x58, 0x02, 0xBC, 0x18, 0x64, 0x03, 0x84,\
+        0x03, 0xE8, 0x04, 0x4C, 0x04, 0xB0, 0x05, 0x14, 0x05, 0x78, 0x05, 0xDC, 0x06, 0x40, 0x06, 0xA4, 0x07, 0x08, 0x07, 0x6C,\
+        0x07, 0xD0, 0x0C, 0x1A, 0x0C, 0x4C, 0x0C, 0x7E, 0x0C, 0xB0, 0x0C, 0xE2, 0x0D, 0x14, 0x0D, 0x46, 0x0D, 0x78, 0x0D, 0xAA,\
+        0x0D, 0xDC, 0x0E, 0x0E, 0x0E, 0x40, 0x0E, 0x72, 0x0E, 0xA4, 0x0E, 0xD6};
+    
     NSInteger dataLength = 0;
     
     if (connectStatus == 0)
@@ -175,7 +182,7 @@ NSInteger ipRouterHostPort = 3671;
     //NSInteger outputValue = [value integerValue];
     NSArray *groupAddressSplit = [groupAddress componentsSeparatedByString:@"/"];
     
-    Byte sendByte[] = {0x06,0x10,0x04,0x20,0x00,0x15,0x04,CID,SC,0x00,0x11,0x00,0xbc,0xd0,0x00,0x00,0x18,0x00,0x01,0x00,0x81,0x00};
+    Byte sendByte[] = {0x06,0x10,0x04,0x20,0x00,0x15,0x04,CID,SC,0x00,0x11,0x00,0xbc,0xd0,0x00,0x00,0x18,0x00,0x01,0x00,0x81,0x00,0x00};
     
     NSMutableData *data = [[NSMutableData alloc] init];
     
@@ -200,6 +207,21 @@ NSInteger ipRouterHostPort = 3671;
             sendByte[20] = 0x80;
             sendByte[21] = [value integerValue];
             dataLength = 22;
+            //SC++;
+        }
+        else if ([valueLength isEqualToString:@"2Byte"])
+        {
+            if ([value integerValue] < 0 || [value integerValue] > 36)
+            {
+                return;
+            }
+            
+            sendByte[5] = 0x17;//package length
+            sendByte[18] = 3;//value length
+            sendByte[20] = 0x80; //apci
+            sendByte[21] = eibIntValue[[value integerValue] * 2]; //value
+            sendByte[22] = eibIntValue[[value integerValue] * 2 + 1]; //value
+            dataLength = 23;
             //SC++;
         }
         
@@ -326,15 +348,30 @@ withFilterContext:(id)filterContext
             NSLog(@"SENT (%i): Connection ACK CID %u  SC %u", (int)tag, CID, SC);
             tag++;
             
+            if ((testByte[19] == 0x00) && (testByte[20]  == 0x00))  //group value read
+            {
+                return;
+            }
+            
             NSString *groupAddress = [[NSString alloc] initWithFormat:@"%d/%d/%d",(testByte[16] >> 3), testByte[16] & 0x07,testByte[17]];
             NSString *value = nil;
-            if (testByte[18] == 1)
+            
+            
+            if (testByte[18] == 1) //1Bit
             {
                 value = [[NSString alloc] initWithFormat:@"%d",testByte[20] & 0x01];
             }
-            else if(testByte[18] == 2)
+            else if(testByte[18] == 2) //1Byte
             {
                 value = [[NSString alloc] initWithFormat:@"%d",testByte[21]];
+            }
+            else if(testByte[18] == 3) //2Byte
+            {
+                float floatValueM = (testByte[21] & 0x07) << 8 | testByte[22];
+                float floatValueE = (testByte[21] >> 3) & 0x0F;
+                float tempValue = pow(2.0, floatValueE) * (floatValueM * 0.01);
+                float tempValueInt = tempValue;
+                value = [[NSString alloc] initWithFormat:@"%f",tempValueInt];
             }
             
             NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddress, @"Address", value, @"Value",nil];

@@ -17,7 +17,7 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="BG_Blue.png" translatesAutoresizingMaskIntoConstraints="NO" id="Zkw-aj-K2B">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="703"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="次卧2x.png" translatesAutoresizingMaskIntoConstraints="NO" id="Kco-Hw-2ms">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="次卧.png" translatesAutoresizingMaskIntoConstraints="NO" id="Kco-Hw-2ms">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="703"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="yzl-jc-y9k" userLabel="床头灯左" customClass="BLUISwitch">
@@ -42,6 +42,16 @@
                         <userDefinedRuntimeAttribute type="string" keyPath="objName" value="床头灯右"/>
                     </userDefinedRuntimeAttributes>
                 </button>
+                <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Nu4-Pl-l9T" customClass="BLUICurtainButton">
+                    <rect key="frame" x="789" y="307" width="50" height="50"/>
+                    <state key="normal" backgroundImage="off.png">
+                        <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                    </state>
+                    <state key="selected" backgroundImage="on.png"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="objName" value="窗帘"/>
+                    </userDefinedRuntimeAttributes>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
@@ -51,6 +61,6 @@
         <image name="BG_Blue.png" width="1024" height="768"/>
         <image name="off.png" width="50" height="50"/>
         <image name="on.png" width="50" height="50"/>
-        <image name="次卧2x.png" width="1312" height="1000"/>
+        <image name="次卧.png" width="656" height="500"/>
     </resources>
 </document>

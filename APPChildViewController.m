@@ -12,6 +12,10 @@
 #import "Utils.h"
 #import "BLUISwitch.h"
 #import "BLUISceneButton.h"
+#import "BLUIACButton.h"
+#import "BLACViewController.h"
+#import "BLUICurtainButton.h"
+#import "BLCurtainViewController.h"
 
 
 
@@ -21,7 +25,10 @@
     //NSMutableArray * childTransmitDataFIFO;
     AppDelegate *appDelegate;
     //NSString *widgetPlistPath;
-    NSMutableDictionary *nibPlistDict;
+    NSMutableDictionary *viewNibPlistDict;
+    UIViewController  *activeVC;
+    CGFloat phywidth;
+    CGFloat phyheight;
 }
 
 @end
@@ -32,17 +39,24 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view from its nib.
+    activeVC = nil;
+    viewNibPlistDict = nil;
 
     self.view.tag = self.index;
     
     NSLog(@"view count = %d", self.view.subviews.count);
+    
+    CGRect rect = [self.view bounds];
+    CGSize size = rect.size;
+    phywidth = size.width;
+    phyheight = size.height;
     
     appDelegate = (AppDelegate *) [[UIApplication sharedApplication] delegate];
     //transmitActionQueue = appDelegate.transmitQueue;
     //childTransmitDataFIFO = appDelegate.transmitDataFIFO;
     
     NSString *widgetPlistPath = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
-    nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
+    viewNibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     dispatch_async([Utils GlobalUserInitiatedQueue],
                    ^{
@@ -67,8 +81,22 @@
         {
             BLUISceneButton *sceneButton = (BLUISceneButton *) subView;
             
+            [self parseSceneButtonWithNibPlistDict:viewNibPlistDict object:sceneButton];
             [sceneButton addTarget:self action:@selector(sceneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-            [self parseSceneButtonWithNibPlistDict:nibPlistDict object:sceneButton];
+        }
+        else if([subView isMemberOfClass:[BLUIACButton class]])
+        {
+            BLUIACButton *acButton = (BLUIACButton *) subView;
+            
+            [acButton addEnviromentTemperatureLabelWithParentController:self];
+            [self initACButtonWithACButtonObject:acButton nibPlistDict:viewNibPlistDict];
+            [acButton addTarget:self action:@selector(acButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+        }
+        else if([subView isMemberOfClass:[BLUICurtainButton class]])
+        {
+            BLUICurtainButton *curtainButton = (BLUICurtainButton *) subView;
+            [self initCurtainButtonWithACButtonObject:curtainButton nibPlistDict:viewNibPlistDict];
+            [curtainButton addTarget:self action:@selector(curtainButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
         }
         
     }
@@ -80,6 +108,8 @@
     [super didReceiveMemoryWarning];
     // Dispose of any resources that can be recreated.
 }
+
+
 
 /*
 #pragma mark - Navigation
@@ -98,25 +128,25 @@
     //__block NSInteger transmitValue;
     
     NSLog(@"SwitchButtonPressd #%ld, objName = %@", (long)self.index, sender.objName);
-    
+    [self playClickSound];
     
     //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
-    if (!nibPlistDict) {
+    if (!viewNibPlistDict) {
         return;
     }
     //NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     
     //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
-    [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+    [viewNibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
      {
          
          //NSLog(@"dict[%@] = %@", key, temDict[key]);
          //NSString *objectName = (NSString *)key;
          if ([key isEqualToString:sender.objName])
          {
-             NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
+             NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:viewNibPlistDict[key]];
              [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
               {
                   if ([key isEqualToString:@"WriteToGroupAddress"])
@@ -174,7 +204,7 @@
     //__block NSInteger transmitValue;
     
     NSLog(@"SceneButtonPressd #%ld, objName = %@", (long)self.index, sender.objName);
-    
+    [self playClickSound];
     
     //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     dispatch_async([Utils GlobalBackgroundQueue],
@@ -189,7 +219,7 @@
     
 }
 
-- (void) parseSceneButtonWithNibPlistDict:(NSMutableDictionary *)xibPlistDict object:(BLUISceneButton *)sceneButton
+- (void) parseSceneButtonWithNibPlistDict:(NSMutableDictionary *)nibPlistDict object:(BLUISceneButton *)sceneButton
 {
     if (!nibPlistDict) {
         return;
@@ -200,13 +230,139 @@
          
          if ([key isEqualToString:sceneButton.objName])
          {
-             NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
+             NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:obj];
              sceneButton.sceneDelayDuration = [NSNumber numberWithFloat:[objectPropertyDict[@"SceneDelayDuration"] floatValue]];
              sceneButton.sceneSequenceMutableDict = [[NSMutableDictionary alloc] initWithDictionary:objectPropertyDict[@"Scene"]];
              //sceneButton.sceneCount = [sceneButton.sceneSequenceMutableDict count];
          }
      }];
 
+}
+
+#pragma mark AC Button
+- (void) acButtonPressed:(BLUIACButton *)sender
+{
+    [self playClickSound];
+    //[self playClickSound];
+    if (sender.acViewController == nil)
+    {
+//        acVC = [[BLACViewController alloc] init];
+//        acVC.view.frame = CGRectMake(phywidth/2.0 - 298.0/2.0, phyheight/2.0 - 589.0/2.0, 589, 298);
+//        //acVC.view.backgroundColor = [UIColor clearColor];
+//        [self.view addSubview:acVC.view];
+    }
+    else
+    {
+        activeVC = sender.acViewController;
+        [self.view addSubview:sender.acViewController.view];
+    }
+
+}
+
+- (void) initACButtonWithACButtonObject:(BLUIACButton *)acButton nibPlistDict:(NSMutableDictionary *)nibPlistDict
+{
+    
+    
+    dispatch_async([Utils GlobalMainQueue],
+                   ^{
+                       acButton.acViewController = [[BLACViewController alloc] init];
+                       acButton.acViewController.view.frame = CGRectMake(phywidth/2.0 - 298.0/2.0, phyheight/2.0 - 589.0/2.0, 589, 298);
+                       
+                       if (!nibPlistDict) {
+                           return;
+                       }
+                       
+                       [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                        {
+                            
+                            if ([key isEqualToString:acButton.objName])
+                            {
+                                [acButton.acViewController initACPropertyWithDictionary:obj buttonName:acButton.objName];
+                                *stop = YES;
+                            }
+                        }];
+
+                   });
+    
+    
+}
+
+- (void)touchesBegan:(NSSet *)touches withEvent:(UIEvent *)event
+{
+    UITouch *touch = [touches anyObject];
+    //CGPoint touchPoint = [touch locationInView:[touch view]];//获取坐标相对于当前视图
+    CGPoint touchPoint = [touch locationInView:self.view];//获取视图坐标相对于父视图与子视图无关
+    //touchPoint.x ，touchPoint.y 就是触点的坐标。
+    //   NSLog(@"x = %f  y = %f",touchPoint.x, touchPoint.y);
+    CGRect acVCRect = activeVC.view.frame;
+    //    NSLog(@"curRect.origin.x = %f  curRect.origin.y = %f curRect.size.height = %f curRect.size.width = %f",curRect.origin.x, curRect.origin.y, curRect.size.height, curRect.size.width);
+    //  curRect.origin.x
+    if ([self isInThisRectWithRectOrigX:acVCRect.origin.x rectOrigY:acVCRect.origin.y rectSizeH:acVCRect.size.height rectSizeW:acVCRect.size.width pointX:touchPoint.x pointY:touchPoint.y])
+    {
+        //NSLog(@"This point is within area!!");
+    }
+    else
+    {
+        if (activeVC != nil) {
+            [self playClickSound];
+            //[self.view rem];
+            [activeVC.view removeFromSuperview];
+            self.pageController.dataSource = self.pageControllerDataSource;
+            activeVC = nil;
+            //acVC.view = nil;
+            //removeFromSuperview
+        }
+        //NSLog(@"This point is not within area!!");
+    }
+    
+    //NSLog(@"touchesBegan");
+    
+}
+
+#pragma mark Curtain Button
+- (void) initCurtainButtonWithACButtonObject:(BLUICurtainButton *)curtainButton nibPlistDict:(NSMutableDictionary *)nibPlistDict
+{
+    dispatch_async([Utils GlobalMainQueue],
+                   ^{
+                       curtainButton.curtainViewController = [[BLCurtainViewController alloc] init];
+                       curtainButton.curtainViewController.view.frame = CGRectMake(phywidth/2.0 - 298.0/2.0, phyheight/2.0 - 589.0/2.0, 589, 298);
+                       
+                       if (!nibPlistDict) {
+                           return;
+                       }
+                       
+                       [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                        {
+                            
+                            if ([key isEqualToString:curtainButton.objName])
+                            {
+                                [curtainButton.curtainViewController initCurtainPropertyWithDictionary:obj buttonName:curtainButton.objName];
+                                *stop = YES;
+                            }
+                        }];
+                       
+                   });
+
+}
+
+- (void) curtainButtonPressed:(BLUICurtainButton *)sender
+{
+    [self playClickSound];
+    //[self playClickSound];
+    if (sender.curtainViewController == nil)
+    {
+        //        acVC = [[BLACViewController alloc] init];
+        //        acVC.view.frame = CGRectMake(phywidth/2.0 - 298.0/2.0, phyheight/2.0 - 589.0/2.0, 589, 298);
+        //        //acVC.view.backgroundColor = [UIColor clearColor];
+        //        [self.view addSubview:acVC.view];
+    }
+    else
+    {
+        activeVC = sender.curtainViewController;
+        [self.view addSubview:sender.curtainViewController.view];
+        //self.parentViewController
+        self.pageController.dataSource = nil;
+    }
 }
 
 #pragma mark Send Write Command
@@ -235,58 +391,140 @@
 {
     //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
-    if (!nibPlistDict) {
+    if (!viewNibPlistDict) {
         return;
     }
     //NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     
     //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
-    [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+    [viewNibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
     {
         
         //NSLog(@"dict[%@] = %@", key, temDict[key]);
         NSString *objectName = (NSString *)key;
         
-        NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
-        [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+        NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:obj];
+        
+        for (UIView *subView in self.view.subviews)
         {
-            if ([key isEqualToString:@"ReadFromGroupAddress"])
+            if ([subView isMemberOfClass:[BLUISwitch class]])
             {
-                NSString *valueLength = [[NSString alloc]initWithString:objectPropertyDict[@"ValueLength"]];
-                NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:objectPropertyDict[key]];
-                [readFromGroupAddressDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                BLUISwitch *switchButton = (BLUISwitch *) subView;
+                
+                if ([switchButton.objName isEqualToString:objectName])
                 {
-                    NSLog(@"readFromGroupAddressDict[%@] = %@", key, readFromGroupAddressDict[key]);
-                    if ([readFromGroupAddressDict[key] isEqualToString:groupAddress])
-                    {
-
-                        [self checkSubViewClassMemberAndActionWithGroupAddress:groupAddress withObjectValue:objectValue withObjectName:objectName withValueLength:valueLength];
-
-                    }
-                }];
+                    [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                     {
+                         if ([key isEqualToString:@"ReadFromGroupAddress"])
+                         {
+                             NSString *valueLength = [[NSString alloc]initWithString:objectPropertyDict[@"ValueLength"]];
+                             NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:obj];
+                             [readFromGroupAddressDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                              {
+                                  NSLog(@"readFromGroupAddressDict[%@] = %@", key, obj);
+                                  if ([readFromGroupAddressDict[key] isEqualToString:groupAddress])
+                                  {
+                                      
+                                      [self blUISwitchUpdateActionWithButtonObject:switchButton buttonValue:objectValue buttonName:objectName valueLength:valueLength];
+                                      
+                                  }
+                              }];
+                         }
+                     }];
+                    
+                    break;
+                }
             }
-        }];
+            else if([subView isMemberOfClass:[BLUIACButton class]])
+            {
+                BLUIACButton *acButton = (BLUIACButton *) subView;
+                
+                if ([acButton.objName isEqualToString:objectName])
+                {
+                    [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                     {
+                         NSString *acObjectKey = key;
+                         
+                         //if ([key isEqualToString:@"OnOff"])
+                         {
+                             //NSString *valueLength = [[NSString alloc]initWithString:objectPropertyDict[@"ValueLength"]];
+                             NSDictionary *acObjectDict = [[NSMutableDictionary alloc] initWithDictionary:obj];
+                             [acObjectDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                              {
+                                  if ([key isEqualToString:@"ReadFromGroupAddress"])
+                                  {
+                                      NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:obj];
+                                      [readFromGroupAddressDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+                                       {
+                                           NSLog(@"readFromGroupAddressDict[%@] = %@", key, obj);
+                                           if ([readFromGroupAddressDict[key] isEqualToString:groupAddress])
+                                           {
+                                               if ([acObjectKey isEqualToString:@"OnOff"])
+                                               {
+                                                   BOOL ret = [acButton.acViewController acOnOffButtonStatusUpdateWithValue:objectValue];
+                                                   
+                                                   if (ret == YES)
+                                                   {
+                                                       [acButton setSelected:YES];
+                                                   }
+                                                   else
+                                                   {
+                                                       [acButton setSelected:NO];
+                                                   }
+                                               }
+                                               else if([acObjectKey isEqualToString:@"WindSpeed"])
+                                               {
+                                                   [acButton.acViewController acWindSpeedButtonStatusUpdateWithValue:objectValue];
+                                               }
+                                               else if([acObjectKey isEqualToString:@"Mode"])
+                                               {
+                                                   [acButton.acViewController acModeButtonStatusUpdateWithValue:objectValue];
+
+                                               }
+                                               else if([acObjectKey isEqualToString:@"EnviromentTemperature"])
+                                               {
+                                                   NSString *enviromentTemperatureValue = [[NSString alloc] initWithFormat:@"%d", objectValue];
+                                                   [acButton.acEnviromentTemperatureLabel setText:enviromentTemperatureValue];
+                                               }
+                                               else if([acObjectKey isEqualToString:@"SettingTemperature"])
+                                               {
+                                                   [acButton.acViewController acSettingTemperatureUpdateWithValue:objectValue];
+                                               }
+                                           }
+                                       }];
+                                  }
+                              }];
+                         }
+                     }];
+                    
+                    break;
+                }
+            }
+
+        }
+        
+
     }];
     
 }
 
-- (void)checkSubViewClassMemberAndActionWithGroupAddress:(NSString *)groupAddress withObjectValue:(NSInteger)objectValue withObjectName:(NSString *)objectName withValueLength:(NSString *)valueLength
-{
-    for (UIView *subView in self.view.subviews)
-    {
-        if ([subView isMemberOfClass:[BLUISwitch class]])
-        {
-            BLUISwitch *button = (BLUISwitch *) subView;
-            [self blUIButtonUpdateActionWithButtonObject:button buttonValue:objectValue buttonName:objectName valueLength:valueLength];
-        }
-        
-    }
-}
+//- (void)checkSubViewClassMemberAndActionWithGroupAddress:(NSString *)groupAddress withObjectValue:(NSInteger)objectValue withObjectName:(NSString *)objectName withValueLength:(NSString *)valueLength
+//{
+//    for (UIView *subView in self.view.subviews)
+//    {
+//        if ([subView isMemberOfClass:[BLUISwitch class]])
+//        {
+//            BLUISwitch *button = (BLUISwitch *) subView;
+//            [self blUIButtonUpdateActionWithButtonObject:button buttonValue:objectValue buttonName:objectName valueLength:valueLength];
+//        }
+//        
+//    }
+//}
 
-- (void) blUIButtonUpdateActionWithButtonObject:(BLUISwitch *)button buttonValue:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
+- (void) blUISwitchUpdateActionWithButtonObject:(BLUISwitch *)button buttonValue:(NSInteger)value buttonName:(NSString *)name valueLength:(NSString *)valueLength
 {
-    if ([button.objName isEqualToString:name])
+    //if ([button.objName isEqualToString:name])
     {
         if ([valueLength isEqualToString:@"1Bit"])
         {
@@ -303,23 +541,24 @@
 
 }
 
+
 #pragma mark Init Widgets Status
 
 -(void) getAllWidgetsStatus
 {
     //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
-    if (!nibPlistDict) {
+    if (!viewNibPlistDict) {
         return;
     }
     //NSMutableDictionary *nibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
     
     //__block NSMutableDictionary *readFromGroupAddressDict = [[NSMutableDictionary alloc] initWithDictionary:temDict[key]];
-    [nibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+    [viewNibPlistDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
      {
          
-         NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:nibPlistDict[key]];
+         NSMutableDictionary *objectPropertyDict = [[NSMutableDictionary alloc] initWithDictionary:viewNibPlistDict[key]];
          [objectPropertyDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
           {
               if ([key isEqualToString:@"ReadFromGroupAddress"])
@@ -336,6 +575,29 @@
               }
           }];
      }];
+}
+
+#pragma mark Private Method
+- (BOOL) isInThisRectWithRectOrigX:(float)origX rectOrigY:(float)origY rectSizeH:(float)sizeH rectSizeW:(float)sizeW pointX:(float)ptX pointY:(float)ptY
+{
+    if ((ptX > origX) && (ptX < (origX + sizeW)) && (ptY > origY) && (ptY < (origY + sizeH))) {
+        
+        return YES;
+    }
+    
+    return NO;
+}
+
+- (void) playClickSound
+{
+    CFBundleRef mainbundle=CFBundleGetMainBundle();
+    SystemSoundID soundFileObject;
+    //获得声音文件URL
+    CFURLRef soundfileurl=CFBundleCopyResourceURL(mainbundle,CFSTR("click1"),CFSTR("mp3"),NULL);
+    //创建system sound 对象
+    AudioServicesCreateSystemSoundID(soundfileurl, &soundFileObject);
+    //播放
+    AudioServicesPlaySystemSound(soundFileObject);
 }
 
 @end

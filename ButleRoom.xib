@@ -17,7 +17,7 @@
                 <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="BG_Blue.png" translatesAutoresizingMaskIntoConstraints="NO" id="cAL-w3-N2s">
                     <rect key="frame" x="0.0" y="0.0" width="1030" height="703"/>
                 </imageView>
-                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="管家房2x.png" translatesAutoresizingMaskIntoConstraints="NO" id="P3h-2N-QVq">
+                <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="管家房.png" translatesAutoresizingMaskIntoConstraints="NO" id="P3h-2N-QVq">
                     <rect key="frame" x="0.0" y="0.0" width="1024" height="703"/>
                 </imageView>
                 <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="4YX-1v-kD5" userLabel="床头灯" customClass="BLUISwitch">
@@ -41,6 +41,6 @@
         <image name="BG_Blue.png" width="1024" height="768"/>
         <image name="off.png" width="50" height="50"/>
         <image name="on.png" width="50" height="50"/>
-        <image name="管家房2x.png" width="1447" height="944"/>
+        <image name="管家房.png" width="724" height="472"/>
     </resources>
 </document>
