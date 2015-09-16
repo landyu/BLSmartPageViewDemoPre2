@@ -16,26 +16,11 @@
                         <rect key="frame" x="0.0" y="0.0" width="768" height="1024"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="B9x-9Q-IYr">
+                            <navigationBar contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="h4X-z1-bGl">
                                 <rect key="frame" x="0.0" y="21" width="1024" height="44"/>
-                                <inset key="insetFor6xAndEarlier" minX="-10" minY="-10" maxX="20" maxY="18"/>
                                 <color key="barTintColor" red="0.10588236149999999" green="0.32549020649999999" blue="0.1176470667" alpha="1" colorSpace="deviceRGB"/>
                                 <items>
-                                    <navigationItem id="oHZ-gQ-bUR">
-                                        <nil key="title"/>
-                                        <barButtonItem key="leftBarButtonItem" id="iqK-t3-cZt">
-                                            <button key="customView" opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" id="zms-or-1j0">
-                                                <rect key="frame" x="16" y="7" width="36" height="30"/>
-                                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
-                                                <state key="normal" title="Send">
-                                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
-                                                </state>
-                                                <connections>
-                                                    <action selector="recvFromBusBtn:" destination="BYZ-38-t0r" eventType="touchUpInside" id="OPQ-TL-Hsa"/>
-                                                </connections>
-                                            </button>
-                                        </barButtonItem>
-                                    </navigationItem>
+                                    <navigationItem title="Title" id="GVZ-G1-hc2"/>
                                 </items>
                             </navigationBar>
                         </subviews>
@@ -44,8 +29,7 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="768" height="1024"/>
                     <connections>
-                        <outlet property="viewControllerNavigationItem" destination="oHZ-gQ-bUR" id="RyS-7Z-pvz"/>
-                        <outletCollection property="viewControllerNavigationItemCollection" destination="oHZ-gQ-bUR" id="zSs-wn-Fgv"/>
+                        <outlet property="viewControllerNavigationItem" destination="GVZ-G1-hc2" id="G5l-T6-8Mi"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>
