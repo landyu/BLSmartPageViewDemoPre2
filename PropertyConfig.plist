@@ -2,45 +2,6 @@
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
-	<key>SceneButtonList</key>
-	<dict>
-		<key>ButtonListDetail</key>
-		<dict>
-			<key>2</key>
-			<dict>
-				<key>3</key>
-				<string>ButleRoom</string>
-				<key>2</key>
-				<string>SecondBedroom</string>
-				<key>1</key>
-				<string>NorthMainBedroom</string>
-				<key>0</key>
-				<string>LivingDiningRoom</string>
-			</dict>
-			<key>1</key>
-			<dict>
-				<key>3</key>
-				<string>ButleRoom</string>
-				<key>2</key>
-				<string>SecondBedroom</string>
-				<key>1</key>
-				<string>NorthMainBedroom</string>
-				<key>0</key>
-				<string>LivingDiningRoom</string>
-			</dict>
-			<key>0</key>
-			<dict/>
-		</dict>
-		<key>ButtonLabel</key>
-		<dict>
-			<key>2</key>
-			<string>二楼</string>
-			<key>1</key>
-			<string>一楼</string>
-			<key>0</key>
-			<string>鸟瞰图</string>
-		</dict>
-	</dict>
 	<key>SceneList</key>
 	<dict>
 		<key>0</key>

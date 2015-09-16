@@ -10,25 +10,21 @@
 #import "APPChildViewController.h"
 #import "AppDelegate.h"
 #import "PropertyConfigPhrase.h"
-#import "REMenu.h"
 //#import <objc/runtime.h>
 //@import CoreData;
 
 @interface ViewController ()
 {
+    NSMutableArray *objectTable;
+    NSMutableArray *associationTable;
+    NSMutableArray *writeToAddressTable;
+    NSMutableArray *readFromAddressTable;
+    NSMutableArray *writeToValueTable;
+    NSMutableArray *readFromValueTable;
     
-//    NSMutableArray *objectTable;
-//    NSMutableArray *associationTable;
-//    NSMutableArray *writeToAddressTable;
-//    NSMutableArray *readFromAddressTable;
-//    NSMutableArray *writeToValueTable;
-//    NSMutableArray *readFromValueTable;
-    
-    //REMenu *menu;
-    //UITextField* groupAddressField;
-    //UITextField* valueField;
+    UITextField* groupAddressField;
+    UITextField* valueField;
 }
-@property (strong, readwrite, nonatomic) REMenu *menu;
 
 @end
 
@@ -39,22 +35,16 @@
     // Do any additional setup after loading the view, typically from a nib.
     
     //add test Text Field
-    //groupAddressField=[[UITextField alloc]initWithFrame:CGRectMake(150, 28, 100, 30)];
-    //groupAddressField.borderStyle = UITextBorderStyleRoundedRect;//圆角
-    //groupAddressField.placeholder = @"Add";
+    groupAddressField=[[UITextField alloc]initWithFrame:CGRectMake(150, 28, 100, 30)];
+    groupAddressField.borderStyle = UITextBorderStyleRoundedRect;//圆角
+    groupAddressField.placeholder = @"Add";
     
-    //valueField=[[UITextField alloc]initWithFrame:CGRectMake(260, 28, 100, 30)];
-    //valueField.borderStyle = UITextBorderStyleRoundedRect;//圆角
-    //valueField.placeholder = @"Value";
+    valueField=[[UITextField alloc]initWithFrame:CGRectMake(260, 28, 100, 30)];
+    valueField.borderStyle = UITextBorderStyleRoundedRect;//圆角
+    valueField.placeholder = @"Value";
     
-    //[[self view] addSubview:groupAddressField];
-    //[[self view] addSubview:valueField];
-    
-    
-//add roomButtonList
-    [self initRoomSelectButton];
-
-    
+    [[self view] addSubview:groupAddressField];
+    [[self view] addSubview:valueField];
     
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
     
@@ -223,85 +213,10 @@
 }
 
 
-//- (IBAction)recvFromBusBtn:(id)sender
-//{
-//    
-//    NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddressField.text, @"Address", valueField.text, @"Value",nil];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"BL.BLSmartPageViewDemo.RecvFromBus" object:self userInfo:eibBusDataDict];
-//}
-
-- (void)initRoomSelectButton
+- (IBAction)recvFromBusBtn:(id)sender
 {
     
-    [self initNavigatorButtonItems];
-    
-//    //__typeof (self) __weak weakSelf = self;
-//    REMenuItem *homeItem = [[REMenuItem alloc] initWithTitle:@"Home"
-//                                                    subtitle:@"Return to Home Screen"
-//                                                       image:[UIImage imageNamed:@"Icon_Home"]
-//                                            highlightedImage:nil
-//                                                      action:^(REMenuItem *item) {
-//                                                          NSLog(@"Item: %@", item);
-////                                                          XHomeViewController *controller = [[XHomeViewController alloc] init];
-////                                                          [weakSelf setViewControllers:@[controller] animated:NO];
-//                                                      }];
-//    
-//    homeItem.tag = 0;
-//    
-//    self.menu = [[REMenu alloc] initWithItems:@[homeItem]];
-//    
-//    if (!REUIKitIsFlatMode())
-//    {
-//        self.menu.cornerRadius = 4;
-//        self.menu.shadowRadius = 4;
-//        self.menu.shadowColor = [UIColor blackColor];
-//        self.menu.shadowOffset = CGSizeMake(0, 1);
-//        self.menu.shadowOpacity = 1;
-//    }
-//    
-//    [self.menu setClosePreparationBlock:^{
-//        NSLog(@"Menu will close");
-//    }];
-//    
-//    [self.menu setCloseCompletionHandler:^{
-//        NSLog(@"Menu did close");
-//    }];
-//    
-//    [self.navigationController]
-
-
-}
-
-- (void) initNavigatorButtonItems
-{
-    UIButton * customRoomSelectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-    customRoomSelectButton.frame = CGRectMake(924, 28, 30, 30);
-    [customRoomSelectButton setImage:[UIImage imageNamed:@"Icon_Home.png"] forState:UIControlStateNormal];
-    //[customFloorSelectButton setTitle:@"Floor" forState:UIControlStateNormal];
-    //[customFloorSelectButton setTitleEdgeInsets:UIEdgeInsetsMake(-1, -55, 0, 0)];
-    //[customFloorSelectButton.titleLabel setFont:[UIFont boldSystemFontOfSize:14.0]];
-    //[customFloorSelectButton setTitleColor:[UIColor colorWithRed:233.0/255.0 green:220.0/255.0 blue:207.0/255.0 alpha:1.0]forState:UIControlStateNormal];
-    [customRoomSelectButton addTarget:self.navigationItem action:@selector(roomSelect:) forControlEvents:UIControlEventTouchUpInside];
-    //UIBarButtonItem *roomSelectButton = [[UIBarButtonItem alloc] initWithCustomView:customRoomSelectButton];
-    
-    [[self view] addSubview:customRoomSelectButton];
-    //[[self view] addSubview:valueField];
-
-//    {
-//        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self.navigationController action:nil];
-//        negativeSpacer.width = 40;
-//        self.navigationItem.rightBarButtonItems =[NSArray arrayWithObjects:negativeSpacer, negativeSpacer, negativeSpacer, negativeSpacer, roomSelectButton, nil];
-//    }
-}
-
-- (void)roomSelect:(UIButton *)sender
-{
-    CGRect buttonRect = sender.frame;
-    NSLog(@"roomSelect @%f @%f", buttonRect.origin.x, buttonRect.origin.y);
-//    if (self.menu.isOpen)
-//        return [self.menu close];
-    
-    //[self.menu showFromNavigationController:self];
-    //[self.menu showFromNavigationController:self withPressedButtonRect:buttonRect];
+    NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddressField.text, @"Address", valueField.text, @"Value",nil];
+    [[NSNotificationCenter defaultCenter] postNotificationName:@"BL.BLSmartPageViewDemo.RecvFromBus" object:self userInfo:eibBusDataDict];
 }
 @end
