@@ -17,10 +17,6 @@
 - (BOOL)udpSocketisClosed;
 - (void)connectDevice;
 - (void)disconnectDevice;
-- (BOOL)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType;
--(void) connectDeviceTaskSuspend;
--(void) connectDeviceTaskResume;
-- (BOOL) isDeviceConnected;
-- (void) seTtunnellingConnectStateAsTunnellingSocketConnectResponseNoConnectionError;
+- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType;
 
 @end

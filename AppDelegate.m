@@ -43,33 +43,6 @@
     
     transmitUdpHandle = [TransmitUdp sharedInstance];
     
-    [transmitUdpHandle seTtunnellingConnectStateAsTunnellingSocketConnectResponseNoConnectionError];
-    
-    dispatch_async(serialUdpWriteToBusQueue,
-                   ^{
-                       while (true)
-                       {
-                           if ([transmitUdpHandle isDeviceConnected] == NO)
-                           {
-                               [NSThread sleepForTimeInterval:0.01];
-                               continue;
-                           }
-                           
-                           if ([transmitDataFIFO count])
-                           {
-                               NSDictionary *dataWriteToBus = [self readDataFromFIFOThreadSave];  //read only
-                               [transmitUdpHandle sendKnxDataWithGroupAddress:[dataWriteToBus objectForKey:@"GroupAddress"] objectValue:[dataWriteToBus objectForKey:@"Value"] valueLength:[dataWriteToBus objectForKey:@"ValueLength"] commandType:[dataWriteToBus objectForKey:@"CommandType"]];
-                               
-                               [self popDataFromFIFOThreadSave];
-                           }
-                           else
-                           {
-                               [NSThread sleepForTimeInterval:0.01];
-                           }
-                       }
-                   });
-
-    
 //    if ((transmitDataFIFO != nil) && (transmitQueue != nil))
 //    {
 //        dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
@@ -95,7 +68,6 @@
 - (void)applicationWillResignActive:(UIApplication *)application {
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
-    [transmitUdpHandle connectDeviceTaskSuspend];
     [transmitUdpHandle disconnectDevice];
 }
 
@@ -118,8 +90,7 @@
     }
     else
     {
-        //[transmitUdpHandle connectDevice];
-        [transmitUdpHandle connectDeviceTaskResume];
+        [transmitUdpHandle connectDevice];
     }
     
 }
@@ -136,20 +107,17 @@
 
 - (void)writeToBus:(NSNotification*) notification
 {
-
-        //NSDictionary *dataWriteToBus = [self popDataFromFIFOThreadSave];
-        
+    
+    while ([transmitDataFIFO count])
+    {
+        NSDictionary *dataWriteToBus = [self popDataFromFIFOThreadSave];
         //NSLog(@"transmitData = %@", [transmitDataFIFO queuePop]);
-//        dispatch_async(serialUdpWriteToBusQueue,
-//                       ^{
-//                           while ([transmitDataFIFO count])
-//                           {
-//                               NSDictionary *dataWriteToBus = [self readDataFromFIFOThreadSave];  //read only
-//                               [transmitUdpHandle sendKnxDataWithGroupAddress:[dataWriteToBus objectForKey:@"GroupAddress"] objectValue:[dataWriteToBus objectForKey:@"Value"] valueLength:[dataWriteToBus objectForKey:@"ValueLength"] commandType:[dataWriteToBus objectForKey:@"CommandType"]];
-//                               
-//                               [self popDataFromFIFOThreadSave];
-//                           }
-//                       });
+        dispatch_async(serialUdpWriteToBusQueue,
+                       ^{
+                               [transmitUdpHandle sendKnxDataWithGroupAddress:[dataWriteToBus objectForKey:@"GroupAddress"] objectValue:[dataWriteToBus objectForKey:@"Value"] valueLength:[dataWriteToBus objectForKey:@"ValueLength"] commandType:[dataWriteToBus objectForKey:@"CommandType"]];
+                       });
+        
+    };
 }
 
 -(void)pushDataToFIFOThreadSaveAndSendNotificationAsync:(id)value
@@ -157,30 +125,20 @@
     dispatch_barrier_async(concurrentWriteToBusDataProcessQueue,
     ^{
         [self.transmitDataFIFO queuePush:value];
-//        dispatch_async([Utils GlobalMainQueue],
-//                       ^{
-//                           [self postTransmitQueueDataUpdateNotification];
-//                       });
+        dispatch_async([Utils GlobalMainQueue],
+                       ^{
+                           [self postTransmitQueueDataUpdateNotification];
+                       });
     });
 
 }
 
 -(NSDictionary *)popDataFromFIFOThreadSave
 {
-    __block NSDictionary *dataPop;
+    __block NSDictionary *dataCopy;
     dispatch_barrier_sync(concurrentWriteToBusDataProcessQueue,
                   ^{
-                      dataPop = [self.transmitDataFIFO queuePop];
-                  });
-    return dataPop;
-}
-
-- (NSDictionary *)readDataFromFIFOThreadSave
-{
-    __block NSDictionary *dataCopy; // 1
-    dispatch_sync(concurrentWriteToBusDataProcessQueue,
-                  ^{ // 2
-                      dataCopy = [transmitDataFIFO objectAtIndex:0];// 3
+                      dataCopy = [self.transmitDataFIFO queuePop];
                   });
     return dataCopy;
 }

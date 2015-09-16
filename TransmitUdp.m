@@ -8,7 +8,6 @@
 
 #import "TransmitUdp.h"
 #import "GCDAsyncUdpSocket.h"
-#import "Utils.h"
 
 NSTimer *udpHeartBeat;
 unsigned int CID = 0;
@@ -18,51 +17,10 @@ unsigned int connectStatus = 0;
 NSString *ipRouterHost = @"192.168.10.193";
 NSInteger ipRouterHostPort = 3671;
 
-enum TunnellingSocketError
-{
-    TunnellingSocketNoError = 0,         // Never used
-    TunnellingSocketConnectRequestTimeoutError = 1,
-    TunnellingSocketConnectResponseNoConnectionError = 2,
-    TunnellingSocketConnectResponseOtherError = 3,
-    TunnellingSocketConnectionStateResponseWait = 4,
-    TunnellingRequestAckResponseStateWait = 5,
-    TunnellingRequestAckResponseStateOtherError = 6,
-    
-    TunnellingSocketConnectResponseConnectionTypeError = 0x22,  //The requested connection type is not supported by the KNXnet/IP Server device.
-    TunnellingSocketConnectResponseConnectionOptionError = 0x23, //One or more requested connection options are not supported by the KNXnet/IP Server device.
-    TunnellingSocketConnectResponseNoMoreConnectionsError = 0x24, //The KNXnet/IP Server device cannot accept the new data connection because its maximum amount of concurrent connections is already occupied.
-    TunnellingSocketConnectResponseNoMoreUniqueConnectionsError = 0x25,
-    TunnellingSocketConnectionStateResponseConnectionIdError = 0x21, //The KNXnet/IP Server device cannot find an active data connection with the specified ID.
-    TunnellingSocketConnectionStateResponseDataConnectionError = 0x26, //The KNXnet/IP Server device detects an error concerning the data connection with the specified ID.
-    TunnellingSocketConnectionStateResponseKnxConnectionError = 0x27, //The KNXnet/IP Server device detects an error concerning the KNX subnetwork connection with the specified ID.
-    
-};
-typedef enum TunnellingSocketError TunnellingSocketError;
-
-
 @interface TransmitUdp()
 {
     long tag;
     GCDAsyncUdpSocket *TransmitUdpSocket;
-    
-    dispatch_queue_t serialHeartBeatWaitResponseQueue;
-    dispatch_queue_t serialKnxUdpReconnectQueue;
-    
-    NSTimer *connectionStateResponseTimeout; //10s
-    NSTimer *tunnellingRequestAckResponseTimeout; //1s
-    
-    NSUInteger connectionStateRequestRepeatCounter; //3
-    NSUInteger tunnellingRequestRepeatCounter; //2
-    
-    TunnellingSocketError tunnellingConnectState;
-    TunnellingSocketError heartBeatState;
-    
-    BOOL connectionStateResponseTimeoutFlag;
-    BOOL connectDeviceTaskSuspendFlag;
-    
-    TunnellingSocketError tunnellingRequestAckResponseState;
-    BOOL tunnellingRequestAckResponseTimeoutFlag;
-    //BOOL timeoutFlag;
 }
 @end
 
@@ -88,24 +46,11 @@ typedef enum TunnellingSocketError TunnellingSocketError;
     TransmitUdpSocket = [[GCDAsyncUdpSocket alloc] initWithDelegate:self delegateQueue:dispatch_get_main_queue()];
     
     NSError *error = nil;
-    serialHeartBeatWaitResponseQueue = dispatch_queue_create("BL.BLSmartPageViewDemo.HeartBeatWaitResponseQueue", DISPATCH_QUEUE_SERIAL);
-    serialKnxUdpReconnectQueue = dispatch_queue_create("BL.BLSmartPageViewDemo.KnxUdpReconnectQueue", DISPATCH_QUEUE_SERIAL);
-    
-    tunnellingConnectState = TunnellingSocketConnectResponseNoConnectionError;
-    heartBeatState = TunnellingSocketNoError;
-    
-    tunnellingRequestAckResponseState = TunnellingRequestAckResponseStateWait;
     
     if (![TransmitUdpSocket bindToPort:57032 error:&error])
     {
         NSLog(@"Error binding: %@", error);
         return;
-    }
-    else
-    {
-        //NSLog(@"didConnectToAddress %@", address);
-        //[TransmitUdpSocket sendData:nil toHost:@"127.0.0.1" port:0 withTimeout:64 tag:0];
-        //NSLog(@"didConnectToAddress sock.localAddress %@ sock.localHost %@ sock.localPort  %hu", TransmitUdpSocket.localAddress_IPv4, TransmitUdpSocket.localHost, TransmitUdpSocket.localPort);
     }
     if (![TransmitUdpSocket beginReceiving:&error])
     {
@@ -115,24 +60,6 @@ typedef enum TunnellingSocketError TunnellingSocketError;
     
     udpHeartBeat = [NSTimer scheduledTimerWithTimeInterval:30.0 target:self selector:@selector(udpHeartBeatTimerFired) userInfo:nil repeats:YES];
     [udpHeartBeat setFireDate:[NSDate distantFuture]];//stop heart beat
-    
-    
-    connectionStateResponseTimeout = [NSTimer scheduledTimerWithTimeInterval:10.0 target:self selector:@selector(connectionStateResponseTimeoutFired) userInfo:nil repeats:YES];
-    //NSLog(@"setFireDate ....");
-    //[connectionStateResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];//stop
-    [connectionStateResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-    connectionStateRequestRepeatCounter = 3;
-    
-    tunnellingRequestAckResponseTimeout = [NSTimer scheduledTimerWithTimeInterval:1.1 target:self selector:@selector(tunnellingRequestAckResponseTimeoutFired) userInfo:nil repeats:YES];
-    [tunnellingRequestAckResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-    tunnellingRequestRepeatCounter = 2;
-    
-    //timeoutFlag = 0;
-    connectionStateResponseTimeoutFlag = YES;
-    connectDeviceTaskSuspendFlag = NO;
-    
-    tunnellingRequestAckResponseTimeoutFlag = YES;
-    
 }
 
 - (void)closeSocket
@@ -167,12 +94,7 @@ typedef enum TunnellingSocketError TunnellingSocketError;
 
 - (void)udpHeartBeatTimerFired
 {
-//    if (connectStatus == 0)
-//    {
-//        return;
-//    }
-    
-    if (tunnellingConnectState != TunnellingSocketNoError)
+    if (connectStatus == 0)
     {
         return;
     }
@@ -183,134 +105,13 @@ typedef enum TunnellingSocketError TunnellingSocketError;
     
     data = [NSMutableData dataWithBytes:sendByte length:16];
     
-    
-    
-    dispatch_async(serialHeartBeatWaitResponseQueue,
-                   ^{
-                       while (connectionStateRequestRepeatCounter)
-                       {
-                           connectionStateRequestRepeatCounter--;
-                           [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag++];
-                           NSLog(@"SENT (%i): Connection State Request Counter %d", (int)tag, connectionStateRequestRepeatCounter);
-                           
-                           connectionStateResponseTimeoutFlag = NO;
-                           heartBeatState = TunnellingSocketConnectionStateResponseWait;
-                           //[connectionStateResponseTimeout setFireDate:[NSDate distantPast]];//start
-                           [connectionStateResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];//start 10 second later
-                           while ((tunnellingConnectState  == TunnellingSocketNoError) && (connectionStateResponseTimeoutFlag == NO) && (heartBeatState == TunnellingSocketConnectionStateResponseWait))
-                           {
-                               [NSThread sleepForTimeInterval:0.01];
-                           }
-                           
-                           if (heartBeatState != TunnellingSocketConnectionStateResponseWait)
-                           {
-                               switch (heartBeatState)
-                               {
-                                   case TunnellingSocketNoError:
-                                   {
-                                       connectionStateRequestRepeatCounter = 3;
-                                       break;
-                                   }
-                                   case TunnellingSocketConnectionStateResponseConnectionIdError:
-                                   {
-                                       [NSThread sleepForTimeInterval:0.01];
-                                       continue;
-                                   }
-                                   case TunnellingSocketConnectionStateResponseDataConnectionError:
-                                   {
-                                       [NSThread sleepForTimeInterval:0.01];
-                                       continue;
-                                   }
-                                   case TunnellingSocketConnectionStateResponseKnxConnectionError:
-                                   {
-                                       [NSThread sleepForTimeInterval:0.01];
-                                       continue;
-                                   }
-                                   default:
-                                       continue;
-                               }
-                           }
-                           
-                           if (heartBeatState == TunnellingSocketNoError)
-                           {
-                               break;
-                           }
-                           
-                           if (connectionStateResponseTimeoutFlag == YES)
-                           {
-                               [NSThread sleepForTimeInterval:0.01];
-                               continue;
-                           }
-                       }
-                       
-                       if (connectionStateRequestRepeatCounter == 0) //heart beat no response or response error and try more than 3 times
-                       {
-                           NSLog(@"heart beat error reset data ...");
-                           connectionStateRequestRepeatCounter = 3;
-                           [udpHeartBeat setFireDate:[NSDate distantFuture]]; //stop heart beat
-                           [connectionStateResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-                           //send disconnect and reset data
-                           [self disconnectDevice];
-                           tunnellingConnectState = TunnellingSocketConnectResponseNoConnectionError;
-                           heartBeatState = TunnellingSocketNoError;
-                       }
-                   });
-    
+    [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
+    NSLog(@"SENT (%i): Connection State Request", (int)tag);
+    tag++;
     
     
 }
 
-- (void) connectionStateResponseTimeoutFired
-{
-    NSLog(@"connectionStateResponseTimeoutFired 10s....");
-    connectionStateResponseTimeoutFlag = YES;
-}
-
-- (void) tunnellingRequestAckResponseTimeoutFired
-{
-    NSLog(@"tunnellingRequestTimeoutFired 1s....");
-    tunnellingRequestAckResponseTimeoutFlag = YES;
-}
-
--(void) connectDeviceTaskSuspend
-{
-    if(serialKnxUdpReconnectQueue == nil)
-    {
-        return;
-    }
-    
-    //dispatch_suspend(serialKnxUdpReconnectQueue);
-    connectDeviceTaskSuspendFlag = YES;
-    //[udpHeartBeat setFireDate:[NSDate distantFuture]]; //stop heart beat
-}
-
--(void) connectDeviceTaskResume
-{
-    if(serialKnxUdpReconnectQueue == nil)
-    {
-        return;
-    }
-    
-    //dispatch_resume(serialKnxUdpReconnectQueue);
-    connectDeviceTaskSuspendFlag = NO;
-}
-
-- (void) seTtunnellingConnectStateAsTunnellingSocketConnectResponseNoConnectionError
-{
-    tunnellingConnectState = TunnellingSocketConnectResponseNoConnectionError;
-}
-
-- (BOOL) isDeviceConnected
-{
-    if (tunnellingConnectState == TunnellingSocketNoError)
-    {
-        return YES;
-    }
-    else
-    {
-        return NO;
-    }
-}
 
 - (void)connectDevice
 {
@@ -324,86 +125,18 @@ typedef enum TunnellingSocketError TunnellingSocketError;
 //        [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
 //        NSLog(@"SENT (%i): Connect Times = %d", (int)tag, connectTimes++);
 //    tag++;
+
     
-    
-    dispatch_async(serialKnxUdpReconnectQueue, ^{
+    dispatch_async(dispatch_get_global_queue(DISPATCH_QUEUE_PRIORITY_DEFAULT, 0), ^{
         // 耗时的操作
-        
-        while (true)
+        while (connectStatus == 0)
         {
-            while(connectDeviceTaskSuspendFlag == YES)
-            {
-                [NSThread sleepForTimeInterval:0.01];
-            }
-            
-            if (tunnellingConnectState  == TunnellingSocketConnectResponseNoConnectionError)
-            {
-                [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag++];
-                connectionStateResponseTimeoutFlag = NO;
-                //[connectionStateResponseTimeout setFireDate:[NSDate date]];//start
-                [connectionStateResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];//start 10 second later
-                NSLog(@"SENT (%i): Connect Times = %d", (int)tag, connectTimes++);
-                while ((tunnellingConnectState  == TunnellingSocketConnectResponseNoConnectionError) && (connectionStateResponseTimeoutFlag == NO))
-                {
-                    [NSThread sleepForTimeInterval:0.01];
-                }
-                if (connectionStateResponseTimeoutFlag == YES) //connection timeout
-                {
-                  NSLog(@"connection timeout...");
-                  [connectionStateResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-                    continue;
-                }
-                else
-                {
-                    //[connectionStateResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-                    switch (tunnellingConnectState)
-                    {
-                        case TunnellingSocketNoError:
-                            NSLog(@"Connect Success...");
-                            break;
-                        case TunnellingSocketConnectResponseNoMoreConnectionsError:
-                        {
-                            tunnellingConnectState = TunnellingSocketConnectResponseNoConnectionError;
-                            NSLog(@"Connect Response No More Connections...");
-                            connectionStateResponseTimeoutFlag = NO;
-                            [connectionStateResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];//start 10 second later
-                            while (connectionStateResponseTimeoutFlag == NO)
-                            {
-                                [NSThread sleepForTimeInterval:0.01];
-                            }
-                            break;
-                        }
-                        case TunnellingSocketConnectResponseNoMoreUniqueConnectionsError:
-                        {
-                            tunnellingConnectState = TunnellingSocketConnectResponseNoConnectionError;
-                            NSLog(@"Connect Response No More Unique Connections...");
-                            connectionStateResponseTimeoutFlag = NO;
-                            [connectionStateResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];//start 10 second later
-                            while (connectionStateResponseTimeoutFlag == NO)
-                            {
-                                [NSThread sleepForTimeInterval:0.01];
-                            }
-                            break;
-                        }
-                        default:
-                        {
-                            tunnellingConnectState = TunnellingSocketConnectResponseNoConnectionError;
-                            NSLog(@"Connect Response Other Error...");
-                            connectionStateResponseTimeoutFlag = NO;
-                            [connectionStateResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:10.0]];//start 10 second later
-                            while (connectionStateResponseTimeoutFlag == NO)
-                            {
-                                [NSThread sleepForTimeInterval:0.01];
-                            }
-                            break;
-                        }
-                    }
-                }
-            }
-            
-            [NSThread sleepForTimeInterval:0.01];
+            [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
+            NSLog(@"SENT (%i): Connect Times = %d", (int)tag, connectTimes++);
+            [NSThread sleepForTimeInterval:5];
             
         }
+        tag++;
     });
 
     
@@ -415,15 +148,10 @@ typedef enum TunnellingSocketError TunnellingSocketError;
 {
     Byte sendByte[] = {0x06,0x10,0x02,0x09,0x00,0x10,CID,0x00,0x08,0x01,0x00,0x00,0x00,0x00,0x00,0x00};
     
-//    if (connectStatus == 0)
-//    {
-//        return;
-//    }
-    
-//    if(tunnellingConnectState != TunnellingSocketNoError)
-//    {
-//        return;
-//    }
+    if (connectStatus == 0)
+    {
+        return;
+    }
     
     NSMutableData *data = [[NSMutableData alloc] init];
     
@@ -433,12 +161,9 @@ typedef enum TunnellingSocketError TunnellingSocketError;
     NSLog(@"SENT (%i): Disconnect CID %u", (int)tag, CID);
     tag++;
     
-    tunnellingConnectState  = TunnellingSocketConnectResponseNoConnectionError;
-    [udpHeartBeat setFireDate:[NSDate distantFuture]];  //stop heart beat
-    
 }
 
-- (BOOL)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType
+- (void)sendKnxDataWithGroupAddress:(NSString *)groupAddress objectValue:(NSString *)value valueLength:(NSString *)valueLength commandType:(NSString *)commandType
 {
     
     //                           0           1           2           3           4           5           6           7           8           9
@@ -449,10 +174,10 @@ typedef enum TunnellingSocketError TunnellingSocketError;
     
     NSInteger dataLength = 0;
     
-//    if (connectStatus == 0)
-//    {
-//        return;
-//    }
+    if (connectStatus == 0)
+    {
+        return;
+    }
     
     //NSInteger outputValue = [value integerValue];
     NSArray *groupAddressSplit = [groupAddress componentsSeparatedByString:@"/"];
@@ -488,7 +213,7 @@ typedef enum TunnellingSocketError TunnellingSocketError;
         {
             if ([value integerValue] < 0 || [value integerValue] > 36)
             {
-                return NO;
+                return;
             }
             
             sendByte[5] = 0x17;//package length
@@ -514,68 +239,19 @@ typedef enum TunnellingSocketError TunnellingSocketError;
     }
     
     
-    
+    SC++;
     data = [NSMutableData dataWithBytes:sendByte length:dataLength];
     
-    tunnellingRequestRepeatCounter = 2;
-    while (tunnellingRequestRepeatCounter)
-    {
-        tunnellingRequestRepeatCounter--;
-        [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
-        NSLog(@"SENT (%i): Request Repeat Counter %d SC  %u", (int)tag, tunnellingRequestRepeatCounter, SC);
-        
-        tunnellingRequestAckResponseTimeoutFlag = NO;
-        tunnellingRequestAckResponseState = TunnellingRequestAckResponseStateWait;
-        //[connectionStateResponseTimeout setFireDate:[NSDate distantPast]];//start
-        [tunnellingRequestAckResponseTimeout setFireDate:[NSDate dateWithTimeIntervalSinceNow:1.1]];//start 1.1 second later
-        while ((tunnellingRequestAckResponseTimeoutFlag == NO) && (tunnellingRequestAckResponseState == TunnellingRequestAckResponseStateWait))
-        {
-            [NSThread sleepForTimeInterval:0.01];
-        }
-        
-        if (tunnellingRequestAckResponseState != TunnellingRequestAckResponseStateWait)
-        {
-            switch (tunnellingRequestAckResponseState)
-            {
-                case TunnellingSocketNoError:
-                {
-                    SC++;
-                    break;
-                }
-                default:
-                    continue;
-            }
+    [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
+    //NSLog(@"SENT (%i): Set Light A %u", (int)tag, sendByte[20] & 0x01);
+    tag++;
 
-        }
-        
-        if (tunnellingRequestAckResponseState == TunnellingSocketNoError)
-        {
-            break;
-        }
-        
-        if (tunnellingRequestAckResponseTimeoutFlag == YES) //timeout
-        {
-            continue;
-        }
-    }
-    
-    if (tunnellingRequestRepeatCounter == 0)  //
-    {
-        NSLog(@"Send request failed...");
-        [tunnellingRequestAckResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-        return NO;
-    }
-    else
-    {
-        return YES;
-    }
 }
 
 #pragma mark GCDAsyncUdpSocket Delegate
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didSendDataWithTag:(long)tag
 {
     // You could add checks here
-    //NSLog(@"didConnectToAddress sock.localAddress %@ sock.localHost %@ sock.localPort  %hu", sock.localAddress_IPv4, sock.localHost, sock.localPort);
 }
 
 - (void)udpSocket:(GCDAsyncUdpSocket *)sock didNotSendDataWithTag:(long)tag dueToError:(NSError *)error
@@ -606,86 +282,29 @@ withFilterContext:(id)filterContext
     {
         //[self logMessage:FORMAT(@"RECV: %@", hexStr)];  //CID
         
-        if ((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x06))
+        if ((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x06) && (testByte[7] == 0x00))
         {
-            if((tunnellingConnectState  != TunnellingSocketConnectResponseNoConnectionError) || (connectionStateResponseTimeoutFlag == YES))
-            {
-                return;
-            }
+            CID = testByte[6];
+            connectStatus = 1;
+            [udpHeartBeat setFireDate:[NSDate distantPast]];  //start heart beat
+            NSLog(@"Connect Sucess CID : %u", CID);  //CID
             
-            [connectionStateResponseTimeout setFireDate:[NSDate distantFuture]];//stop
+//            Byte sendByte[] = {0x06,0x10,0x04,0x20,0x00,0x15,0x04,CID,SC,0x00,0x11,0x00,0xbc,0xd0,0x00,0x00,0x18,0x0c,0x01,0x00,0x00}; //read
+//            SC++;
+//            NSMutableData *data = [[NSMutableData alloc] init];
+//            
+//            data = [NSMutableData dataWithBytes:sendByte length:21];
+//            
+//            [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
+//            NSLog(@"SENT (%i): Read Light A Status CID %u  SC %u", (int)tag, CID, SC);
+//            tag++;
             
-            switch (testByte[7])
-            {
-                case TunnellingSocketNoError:
-                {
-                    CID = testByte[6];
-                    tunnellingConnectState = TunnellingSocketNoError; //Connect Sucess
-                    [udpHeartBeat setFireDate:[NSDate dateWithTimeIntervalSinceNow:30.0]];//start 30 second later
-                    //[udpHeartBeat setFireDate:[NSDate distantPast]];  //start heart beat
-                    NSLog(@"Connect Sucess code %d CID : %u", testByte[7] , CID);  //CID
-                    break;
-                }
-                case TunnellingSocketConnectResponseNoMoreConnectionsError:
-                {
-                    NSLog(@"Connect Failed  E_NO_MORE_CONNECTIONS code %d", testByte[7]);
-                    tunnellingConnectState = TunnellingSocketConnectResponseNoMoreConnectionsError;
-                    break;
-                }
-                case TunnellingSocketConnectResponseNoMoreUniqueConnectionsError:
-                {
-                    NSLog(@"Connect Failed  E_NO_MORE_UNIQUE_CONNECTIONS code %d", testByte[7]);
-                    tunnellingConnectState = TunnellingSocketConnectResponseNoMoreUniqueConnectionsError;
-                    break;
-                }
-                case TunnellingSocketConnectResponseConnectionOptionError:
-                {
-                    NSLog(@"Connect Failed  E_CONNECTION_OPTION code %d", testByte[7]);
-                    tunnellingConnectState = TunnellingSocketConnectResponseConnectionOptionError;
-                    break;
-                }
-                case TunnellingSocketConnectResponseConnectionTypeError:
-                {
-                    NSLog(@"Connect Failed  E_CONNECTION_TYPE code %d", testByte[7]);
-                    tunnellingConnectState = TunnellingSocketConnectResponseConnectionTypeError;
-                    break;
-                }
-                default:
-                    NSLog(@"Connect Failed  Other Error code %d", testByte[7]);
-                    tunnellingConnectState = TunnellingSocketConnectResponseOtherError;
-                    break;
-            }
+            
         }
-//        else if((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x06) && (testByte[7] == 0x24))
-//        {
-//            NSLog(@"Connect Failed  E_NO_MORE_CONNECTIONS");  //CID
-//            if((tunnellingConnectState  != TunnellingSocketConnectResponseNoConnectionError) || (connectionStateResponseTimeoutFlag == timeoutFlag))
-//            {
-//                return;
-//            }
-//            tunnellingConnectState = TunnellingSocketConnectResponseNoMoreConnectionsError;
-//            
-//        }
-//        else if((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x06) && (testByte[7] == 0x23))
-//        {
-//            NSLog(@"Connect Failed  E_CONNECTION_OPTION");  //CID
-//            if((tunnellingConnectState  != TunnellingSocketConnectResponseNoConnectionError) || (connectionStateResponseTimeoutFlag == timeoutFlag))
-//            {
-//                return;
-//            }
-//            tunnellingConnectState = TunnellingSocketConnectResponseConnectionOptionError;
-//            
-//        }
-//        else if((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x06) && (testByte[7] == 0x22))
-//        {
-//            NSLog(@"Connect Failed  E_CONNECTION_TYPE");  //CID
-//            if((tunnellingConnectState  != TunnellingSocketConnectResponseNoConnectionError) || (connectionStateResponseTimeoutFlag == timeoutFlag))
-//            {
-//                return;
-//            }
-//            tunnellingConnectState = TunnellingSocketConnectResponseConnectionTypeError;
-//            
-//        }
+        else if((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x06) && (testByte[7] == 0x24))
+        {
+            NSLog(@"Connect Failed  E_NO_MORE_CONNECTIONS");  //CID
+        }
         else if((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x02) && (testByte[3] == 0x0A))
         {
             if (testByte[6] == CID)
@@ -693,7 +312,6 @@ withFilterContext:(id)filterContext
                 connectStatus = 0;
                 SC = 0;
                 [udpHeartBeat setFireDate:[NSDate distantFuture]]; //stop heart beat
-                [self connectDeviceTaskSuspend];
                 NSLog(@"Disconnect  CID : %u", CID);  //CID
             }
         }
@@ -701,47 +319,17 @@ withFilterContext:(id)filterContext
         {
             if (testByte[6] == CID)
             {
-//                if (testByte[7] == 0x00)
-//                {
-//                    //[self logMessage:FORMAT(@"Connection State Response OK  CID : %u", CID)];  //CID
-//                    NSLog(@"Connection State Response OK  CID : %u", CID);  //CID
-//                    return;
-//                }
-//                else
-//                {
-//                    connectStatus = 0;
-//                    [udpHeartBeat setFireDate:[NSDate distantFuture]];  //stop heart beat
-//                    NSLog(@"Connection State Error  CID : %u", CID);  //CID
-//                }
-                [connectionStateResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-                switch (testByte[7])
+                if (testByte[7] == 0x00)
                 {
-                    case TunnellingSocketNoError:
-                    {
-                        NSLog(@"Connect state  Response No Error");
-                        heartBeatState = TunnellingSocketNoError;
-                        break;
-                    }
-                    case TunnellingSocketConnectionStateResponseConnectionIdError:
-                    {
-                        NSLog(@"Connect state  Response  Connection Id Error");
-                        heartBeatState = TunnellingSocketConnectionStateResponseConnectionIdError;
-                        break;
-                    }
-                    case TunnellingSocketConnectionStateResponseDataConnectionError:
-                    {
-                        NSLog(@"Connect state  Response  Data Connection Error");
-                        heartBeatState = TunnellingSocketConnectionStateResponseDataConnectionError;
-                        break;
-                    }
-                    case TunnellingSocketConnectionStateResponseKnxConnectionError:
-                    {
-                        NSLog(@"Connect state  Response  Knx Connection Error");
-                        heartBeatState = TunnellingSocketConnectionStateResponseKnxConnectionError;
-                        break;
-                    }
-                    default:
-                        break;
+                    //[self logMessage:FORMAT(@"Connection State Response OK  CID : %u", CID)];  //CID
+                    NSLog(@"Connection State Response OK  CID : %u", CID);  //CID
+                    return;
+                }
+                else
+                {
+                    connectStatus = 0;
+                    [udpHeartBeat setFireDate:[NSDate distantFuture]];  //stop heart beat
+                    NSLog(@"Connection State Error  CID : %u", CID);  //CID
                 }
             }
             
@@ -757,7 +345,7 @@ withFilterContext:(id)filterContext
             data = [NSMutableData dataWithBytes:sendByte length:10];
             
             [TransmitUdpSocket sendData:data toHost:ipRouterHost port:ipRouterHostPort withTimeout:64 tag:tag];
-            NSLog(@"SENT (%i): Request ACK CID %u  SC %u", (int)tag, CID, testByte[8]);
+            NSLog(@"SENT (%i): Connection ACK CID %u  SC %u", (int)tag, CID, SC);
             tag++;
             
             if ((testByte[19] == 0x00) && (testByte[20]  == 0x00))  //group value read
@@ -811,28 +399,7 @@ withFilterContext:(id)filterContext
         }
         else if((testByte[0] == 0x06) && (testByte[1] == 0x10) && (testByte[2] == 0x04) && (testByte[3] == 0x21))//ack
         {
-            NSLog(@"SEND SC %u   RECV (%i): Request ACK CID %u  SC %u  Status %u", SC, (int)tag, testByte[7], testByte[8], testByte[9]);
-            if ((testByte[7] == CID)  && (tunnellingRequestAckResponseTimeoutFlag == NO) && (tunnellingRequestAckResponseState == TunnellingRequestAckResponseStateWait))  //
-            {
-                if (testByte[8] == SC)
-                {
-                    [tunnellingRequestAckResponseTimeout setFireDate:[NSDate distantFuture]];//stop
-                    switch (testByte[9])
-                    {
-                        case TunnellingSocketNoError:
-                        {
-                            tunnellingRequestAckResponseState = TunnellingSocketNoError;
-                            break;
-                        }
-                        default:
-                        {
-                            tunnellingRequestAckResponseState = TunnellingRequestAckResponseStateOtherError;
-                            break;
-                        }
-                    }
-                }
-            }
-            
+            NSLog(@"RECV (%i): Connection ACK CID %u  SC %u  Status %u", (int)tag, testByte[7], testByte[8], testByte[9]);
         }
         
     }
@@ -845,6 +412,5 @@ withFilterContext:(id)filterContext
         NSLog(@"RECV: Unknown message from: %@:%hu", host, port);
     }
 }
-
 
 @end
