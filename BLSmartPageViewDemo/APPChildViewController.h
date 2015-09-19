@@ -7,18 +7,18 @@
 //
 
 #import <UIKit/UIKit.h>
-#import "BLUIButton.h"
+#import <AVFoundation/AVFoundation.h>
 
-@interface APPChildViewController : UIViewController
+
+@interface APPChildViewController : UIViewController<AVAudioPlayerDelegate>
 
 //- (void)addChildViewController:(UIViewController *)childController;
 
 @property (assign, nonatomic) NSInteger index;
 @property (copy, nonatomic) NSString* nibName;
-@property (strong, nonatomic) IBOutlet UILabel *screenNumber;
-- (IBAction)testButton:(UIButton *)sender;
-
-- (IBAction)buttonPressd:(BLUIButton *)sender;
+@property (strong, nonatomic) UIPageViewController *pageController;
+@property (strong, nonatomic) id pageControllerDataSource;
+//- (void)switchButtonPressd:(BLUISwitch *)sender;
 
 
 @end
