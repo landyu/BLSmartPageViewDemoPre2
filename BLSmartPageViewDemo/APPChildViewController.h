@@ -11,6 +11,9 @@
 
 
 @interface APPChildViewController : UIViewController<AVAudioPlayerDelegate>
+{
+
+}
 
 //- (void)addChildViewController:(UIViewController *)childController;
 

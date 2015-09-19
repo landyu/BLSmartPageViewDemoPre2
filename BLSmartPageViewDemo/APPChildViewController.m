@@ -60,53 +60,66 @@
     NSString *widgetPlistPath = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     viewNibPlistDict = [[NSMutableDictionary alloc]initWithContentsOfFile:widgetPlistPath];
     
-    dispatch_async([Utils GlobalUserInitiatedQueue],
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvFromBus:) name:@"BL.BLSmartPageViewDemo.RecvFromBus" object:nil];
+    
+    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, 250ull * NSEC_PER_MSEC);
+    
+    dispatch_after(delayTime, [Utils GlobalMainQueue],
                    ^{
+                       for (UIView *subView in self.view.subviews)
+                       {
+                           if ([subView isMemberOfClass:[BLUISwitch class]])
+                           {
+                               BLUISwitch *switchButton = (BLUISwitch *) subView;
+                               
+                               [switchButton addTarget:self action:@selector(switchButtonPressd:) forControlEvents:UIControlEventTouchUpInside];
+                               
+                           }
+                           else if ([subView isMemberOfClass:[BLUISceneButton class]])
+                           {
+                               BLUISceneButton *sceneButton = (BLUISceneButton *) subView;
+                               
+                               [self parseSceneButtonWithNibPlistDict:viewNibPlistDict object:sceneButton];
+                               [sceneButton addTarget:self action:@selector(sceneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                           }
+                           else if([subView isMemberOfClass:[BLUIACButton class]])
+                           {
+                               BLUIACButton *acButton = (BLUIACButton *) subView;
+                               
+                               //dispatch_async([Utils GlobalBackgroundQueue], ^(void)
+                                              //{
+                                                  [acButton addEnviromentTemperatureLabelWithParentController:self];
+                                                  [self initACButtonWithACButtonObject:acButton nibPlistDict:viewNibPlistDict];
+                                                  [acButton addTarget:self action:@selector(acButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                                              //});
+                               
+                           }
+                           else if([subView isMemberOfClass:[BLUICurtainButton class]])
+                           {
+                               //dispatch_async([Utils GlobalBackgroundQueue], ^(void)
+                                              //{
+                                                  BLUICurtainButton *curtainButton = (BLUICurtainButton *) subView;
+                                                  [self initCurtainButtonWithCurtainButtonObject:curtainButton nibPlistDict:viewNibPlistDict];
+                                                  [curtainButton addTarget:self action:@selector(curtainButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+                                              //});
+                           }
+                           else if([subView isMemberOfClass:[BLUIPageJumpButton class]])
+                           {
+                               BLUIPageJumpButton *pageJumpButton = (BLUIPageJumpButton *) subView;
+                               [pageJumpButton addTarget:self action:@selector(pageJumpButtonPressd:) forControlEvents:UIControlEventTouchUpInside];
+                           }
+                           
+                       }
+                       
                        [self getAllWidgetsStatus];
                    });
     
     
     //appDelegate.viewControllerNavigationItemSharedInstance = self.viewControllerNavigationItem;
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvFromBus:) name:@"BL.BLSmartPageViewDemo.RecvFromBus" object:nil];
     
-    for (UIView *subView in self.view.subviews)
-    {
-        if ([subView isMemberOfClass:[BLUISwitch class]])
-        {
-            BLUISwitch *switchButton = (BLUISwitch *) subView;
-            
-            [switchButton addTarget:self action:@selector(switchButtonPressd:) forControlEvents:UIControlEventTouchUpInside];
-            
-        }
-        else if ([subView isMemberOfClass:[BLUISceneButton class]])
-        {
-            BLUISceneButton *sceneButton = (BLUISceneButton *) subView;
-            
-            [self parseSceneButtonWithNibPlistDict:viewNibPlistDict object:sceneButton];
-            [sceneButton addTarget:self action:@selector(sceneButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        }
-        else if([subView isMemberOfClass:[BLUIACButton class]])
-        {
-            BLUIACButton *acButton = (BLUIACButton *) subView;
-            
-            [acButton addEnviromentTemperatureLabelWithParentController:self];
-            [self initACButtonWithACButtonObject:acButton nibPlistDict:viewNibPlistDict];
-            [acButton addTarget:self action:@selector(acButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        }
-        else if([subView isMemberOfClass:[BLUICurtainButton class]])
-        {
-            BLUICurtainButton *curtainButton = (BLUICurtainButton *) subView;
-            [self initCurtainButtonWithACButtonObject:curtainButton nibPlistDict:viewNibPlistDict];
-            [curtainButton addTarget:self action:@selector(curtainButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
-        }
-        else if([subView isMemberOfClass:[BLUIPageJumpButton class]])
-        {
-            BLUIPageJumpButton *pageJumpButton = (BLUIPageJumpButton *) subView;
-            [pageJumpButton addTarget:self action:@selector(pageJumpButtonPressd:) forControlEvents:UIControlEventTouchUpInside];
-        }
-        
-    }
+    
+    
     
     
 }
@@ -136,6 +149,17 @@
     
     NSLog(@"SwitchButtonPressd #%ld, objName = %@", (long)self.index, sender.objName);
     [self playClickSound];
+    
+    if (activeVC != nil)
+    {
+        [activeVC.view removeFromSuperview];
+        activeVC = nil;
+        if (self.pageController.dataSource == nil)
+        {
+            self.pageController.dataSource = self.pageControllerDataSource;
+        }
+    }
+
     
     //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     
@@ -213,6 +237,17 @@
     NSLog(@"SceneButtonPressd #%ld, objName = %@", (long)self.index, sender.objName);
     [self playClickSound];
     
+    if (activeVC != nil)
+    {
+        [activeVC.view removeFromSuperview];
+        activeVC = nil;
+        if (self.pageController.dataSource == nil)
+        {
+            self.pageController.dataSource = self.pageControllerDataSource;
+        }
+    }
+
+    
     //NSString *path = [[NSBundle mainBundle] pathForResource:self.nibName ofType:@"plist"];
     dispatch_async([Utils GlobalBackgroundQueue],
     ^{
@@ -260,6 +295,15 @@
     }
     else
     {
+        if (activeVC != nil)
+        {
+            [activeVC.view removeFromSuperview];
+            activeVC = nil;
+            if (self.pageController.dataSource == nil)
+            {
+                self.pageController.dataSource = self.pageControllerDataSource;
+            }
+        }
         activeVC = sender.acViewController;
         [self.view addSubview:sender.acViewController.view];
     }
@@ -270,8 +314,8 @@
 {
     
     
-    dispatch_async([Utils GlobalMainQueue],
-                   ^{
+    //dispatch_async([Utils GlobalUserInteractiveQueue],
+                   //^{
                        acButton.acViewController = [[BLACViewController alloc] init];
                        acButton.acViewController.view.frame = CGRectMake(phywidth/2.0 - 298.0/2.0, phyheight/2.0 - 589.0/2.0, 589, 298);
                        
@@ -289,7 +333,7 @@
                             }
                         }];
 
-                   });
+                   //});
     
     
 }
@@ -327,10 +371,10 @@
 }
 
 #pragma mark Curtain Button
-- (void) initCurtainButtonWithACButtonObject:(BLUICurtainButton *)curtainButton nibPlistDict:(NSMutableDictionary *)nibPlistDict
+- (void) initCurtainButtonWithCurtainButtonObject:(BLUICurtainButton *)curtainButton nibPlistDict:(NSMutableDictionary *)nibPlistDict
 {
-    dispatch_async([Utils GlobalMainQueue],
-                   ^{
+    //dispatch_sync([Utils GlobalUserInteractiveQueue],
+                   //^{
                        curtainButton.curtainViewController = [[BLCurtainViewController alloc] init];
                        curtainButton.curtainViewController.view.frame = CGRectMake(phywidth/2.0 - 298.0/2.0, phyheight/2.0 - 589.0/2.0, 589, 298);
                        
@@ -348,7 +392,8 @@
                             }
                         }];
                        
-                   });
+                       
+                   //});
 
 }
 
@@ -365,6 +410,11 @@
     }
     else
     {
+        if (activeVC != nil)
+        {
+            [activeVC.view removeFromSuperview];
+            activeVC = nil;
+        }
         activeVC = sender.curtainViewController;
         [self.view addSubview:sender.curtainViewController.view];
         //self.parentViewController

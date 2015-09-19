@@ -53,12 +53,27 @@
                         <userDefinedRuntimeAttribute type="string" keyPath="objName" value="窗帘"/>
                     </userDefinedRuntimeAttributes>
                 </button>
+                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="空调1" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="tZ2-WH-dXg">
+                    <rect key="frame" x="660" y="599" width="44" height="21"/>
+                    <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                    <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
+                    <nil key="highlightedColor"/>
+                </label>
+                <button opaque="NO" contentMode="scaleAspectFit" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="I8A-e6-WIm" customClass="BLUIACButton">
+                    <rect key="frame" x="657" y="552" width="50" height="50"/>
+                    <state key="normal" title="" image="AC-Cool.png" backgroundImage="off.png"/>
+                    <state key="selected" image="AC-Cool.png" backgroundImage="on.png"/>
+                    <userDefinedRuntimeAttributes>
+                        <userDefinedRuntimeAttribute type="string" keyPath="objName" value="空调1"/>
+                    </userDefinedRuntimeAttributes>
+                </button>
             </subviews>
             <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
             <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
         </view>
     </objects>
     <resources>
+        <image name="AC-Cool.png" width="38" height="38"/>
         <image name="BG_Blue.png" width="1024" height="768"/>
         <image name="off.png" width="50" height="50"/>
         <image name="on.png" width="50" height="50"/>
