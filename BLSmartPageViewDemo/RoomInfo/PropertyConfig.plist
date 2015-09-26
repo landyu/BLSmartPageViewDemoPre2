@@ -6,6 +6,28 @@
 	<dict>
 		<key>ButtonListDetail</key>
 		<dict>
+			<key>4</key>
+			<dict>
+				<key>3</key>
+				<string>ButleRoom</string>
+				<key>2</key>
+				<string>SecondBedroom</string>
+				<key>1</key>
+				<string>NorthMainBedroom</string>
+				<key>0</key>
+				<string>LivingDiningRoom</string>
+			</dict>
+			<key>3</key>
+			<dict>
+				<key>3</key>
+				<string>ButleRoom</string>
+				<key>2</key>
+				<string>SecondBedroom</string>
+				<key>1</key>
+				<string>NorthMainBedroom</string>
+				<key>0</key>
+				<string>LivingDiningRoom</string>
+			</dict>
 			<key>2</key>
 			<dict>
 				<key>3</key>
@@ -33,6 +55,10 @@
 		</dict>
 		<key>ButtonListLevel1</key>
 		<dict>
+			<key>4</key>
+			<string>四楼</string>
+			<key>3</key>
+			<string>三楼</string>
 			<key>2</key>
 			<string>二楼</string>
 			<key>1</key>

@@ -62,9 +62,10 @@
     
     [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(recvFromBus:) name:@"BL.BLSmartPageViewDemo.RecvFromBus" object:nil];
     
-    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, 250ull * NSEC_PER_MSEC);
+    dispatch_time_t delayTime = dispatch_time(DISPATCH_TIME_NOW, 150ull * NSEC_PER_MSEC);
     
     dispatch_after(delayTime, [Utils GlobalMainQueue],
+    //dispatch_async([Utils GlobalMainQueue],
                    ^{
                        for (UIView *subView in self.view.subviews)
                        {

@@ -34,6 +34,11 @@
 		172168241BABE6EA0065A213 /* BLCurtainViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 172168201BABE6EA0065A213 /* BLCurtainViewController.m */; settings = {ASSET_TAGS = (); }; };
 		172168251BABE6EA0065A213 /* BLCurtainViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 172168211BABE6EA0065A213 /* BLCurtainViewController.xib */; settings = {ASSET_TAGS = (); }; };
 		172168261BABE6EA0065A213 /* BLUICurtainButton.m in Sources */ = {isa = PBXBuildFile; fileRef = 172168231BABE6EA0065A213 /* BLUICurtainButton.m */; settings = {ASSET_TAGS = (); }; };
+		17619CFF1BB295AE00389414 /* Icon_Activity.png in Resources */ = {isa = PBXBuildFile; fileRef = 17619CFD1BB295AD00389414 /* Icon_Activity.png */; settings = {ASSET_TAGS = (); }; };
+		17619D001BB295AE00389414 /* Icon_Activity@2x.png in Resources */ = {isa = PBXBuildFile; fileRef = 17619CFE1BB295AD00389414 /* Icon_Activity@2x.png */; settings = {ASSET_TAGS = (); }; };
+		17619D0E1BB3CD8400389414 /* BLPadSettingViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 17619D0C1BB3CD8400389414 /* BLPadSettingViewController.m */; settings = {ASSET_TAGS = (); }; };
+		17619D111BB3E62600389414 /* BLPadSettingViewController.xib in Resources */ = {isa = PBXBuildFile; fileRef = 17619D101BB3E62600389414 /* BLPadSettingViewController.xib */; settings = {ASSET_TAGS = (); }; };
+		17619D141BB5328B00389414 /* BLSettingData.m in Sources */ = {isa = PBXBuildFile; fileRef = 17619D131BB5328B00389414 /* BLSettingData.m */; settings = {ASSET_TAGS = (); }; };
 		1762F52F1B92D29E00B4EBE7 /* Utils.m in Sources */ = {isa = PBXBuildFile; fileRef = 1762F52E1B92D29E00B4EBE7 /* Utils.m */; };
 		177986821B8D9CEE00AE0BF1 /* GCDAsyncSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779867D1B8D9CEE00AE0BF1 /* GCDAsyncSocket.m */; };
 		177986831B8D9CEE00AE0BF1 /* GCDAsyncUdpSocket.m in Sources */ = {isa = PBXBuildFile; fileRef = 1779867F1B8D9CEE00AE0BF1 /* GCDAsyncUdpSocket.m */; };
@@ -106,6 +111,13 @@
 		172168211BABE6EA0065A213 /* BLCurtainViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BLCurtainViewController.xib; path = BLCustomClass/BLCurtainViewController.xib; sourceTree = "<group>"; };
 		172168221BABE6EA0065A213 /* BLUICurtainButton.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLUICurtainButton.h; path = BLCustomClass/BLUICurtainButton.h; sourceTree = "<group>"; };
 		172168231BABE6EA0065A213 /* BLUICurtainButton.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BLUICurtainButton.m; path = BLCustomClass/BLUICurtainButton.m; sourceTree = "<group>"; };
+		17619CFD1BB295AD00389414 /* Icon_Activity.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Icon_Activity.png; sourceTree = "<group>"; };
+		17619CFE1BB295AD00389414 /* Icon_Activity@2x.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Icon_Activity@2x.png"; sourceTree = "<group>"; };
+		17619D0B1BB3CD8400389414 /* BLPadSettingViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = BLPadSettingViewController.h; path = BLCustomClass/BLPadSettingViewController.h; sourceTree = "<group>"; };
+		17619D0C1BB3CD8400389414 /* BLPadSettingViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = BLPadSettingViewController.m; path = BLCustomClass/BLPadSettingViewController.m; sourceTree = "<group>"; };
+		17619D101BB3E62600389414 /* BLPadSettingViewController.xib */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = file.xib; name = BLPadSettingViewController.xib; path = BLCustomClass/BLPadSettingViewController.xib; sourceTree = "<group>"; };
+		17619D121BB5328B00389414 /* BLSettingData.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BLSettingData.h; sourceTree = "<group>"; };
+		17619D131BB5328B00389414 /* BLSettingData.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BLSettingData.m; sourceTree = "<group>"; };
 		1762F52D1B92D29E00B4EBE7 /* Utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = Utils.h; sourceTree = "<group>"; };
 		1762F52E1B92D29E00B4EBE7 /* Utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utils.m; sourceTree = "<group>"; };
 		1779867C1B8D9CEE00AE0BF1 /* GCDAsyncSocket.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = GCDAsyncSocket.h; sourceTree = "<group>"; };
@@ -233,6 +245,8 @@
 				1762F52D1B92D29E00B4EBE7 /* Utils.h */,
 				1762F52E1B92D29E00B4EBE7 /* Utils.m */,
 				172168071BABDF700065A213 /* GlobalMacro.h */,
+				17619D121BB5328B00389414 /* BLSettingData.h */,
+				17619D131BB5328B00389414 /* BLSettingData.m */,
 				177986881B8D9FD000AE0BF1 /* BLCustomClass */,
 			);
 			name = Mode;
@@ -251,6 +265,9 @@
 				172168101BABE6980065A213 /* BLUISwitch.m */,
 				172168111BABE6980065A213 /* NSMutableArray+QueueStack.h */,
 				172168121BABE6980065A213 /* NSMutableArray+QueueStack.m */,
+				17619D0B1BB3CD8400389414 /* BLPadSettingViewController.h */,
+				17619D0C1BB3CD8400389414 /* BLPadSettingViewController.m */,
+				17619D101BB3E62600389414 /* BLPadSettingViewController.xib */,
 			);
 			name = BLCustomClass;
 			sourceTree = "<group>";
@@ -353,6 +370,8 @@
 		17DD164F1B75ABED00E0858C /* Image */ = {
 			isa = PBXGroup;
 			children = (
+				17619CFD1BB295AD00389414 /* Icon_Activity.png */,
+				17619CFE1BB295AD00389414 /* Icon_Activity@2x.png */,
 				17DDCA0B1B787D6800AF415B /* 资源库 */,
 				17DD16501B75AC1200E0858C /* homeDemo.png */,
 			);
@@ -408,6 +427,7 @@
 				TargetAttributes = {
 					17DBAD011B74B03B00B26A83 = {
 						CreatedOnToolsVersion = 6.4;
+						DevelopmentTeam = 3UAH89GV65;
 					};
 					17DBAD1A1B74B03B00B26A83 = {
 						CreatedOnToolsVersion = 6.4;
@@ -440,11 +460,13 @@
 			buildActionMask = 2147483647;
 			files = (
 				17DA5F391B96F19D003532ED /* click1.mp3 in Resources */,
+				17619CFF1BB295AE00389414 /* Icon_Activity.png in Resources */,
 				172168021BABBADB0065A213 /* SecondBedroom.plist in Resources */,
 				172168251BABE6EA0065A213 /* BLCurtainViewController.xib in Resources */,
 				172168061BABBCA30065A213 /* 鸟瞰图.xib in Resources */,
 				172167FD1BABBADB0065A213 /* LivingDiningRoom.plist in Resources */,
 				17DDCA0C1B787D6800AF415B /* 资源库 in Resources */,
+				17619D111BB3E62600389414 /* BLPadSettingViewController.xib in Resources */,
 				172167FB1BABBADB0065A213 /* ButleRoom.plist in Resources */,
 				17DD16511B75AC1200E0858C /* homeDemo.png in Resources */,
 				172168031BABBADB0065A213 /* SecondBedroom.xib in Resources */,
@@ -453,6 +475,7 @@
 				17DBAD161B74B03B00B26A83 /* LaunchScreen.xib in Resources */,
 				17DBAD131B74B03B00B26A83 /* Images.xcassets in Resources */,
 				172167FF1BABBADB0065A213 /* NorthMainBedroom.plist in Resources */,
+				17619D001BB295AE00389414 /* Icon_Activity@2x.png in Resources */,
 				172167FE1BABBADB0065A213 /* LivingDiningRoom.xib in Resources */,
 				172167FC1BABBADB0065A213 /* ButleRoom.xib in Resources */,
 				172168001BABBADB0065A213 /* NorthMainBedroom.xib in Resources */,
@@ -475,6 +498,7 @@
 			files = (
 				172168131BABE6980065A213 /* BLUIPageJumpButton.m in Sources */,
 				177986821B8D9CEE00AE0BF1 /* GCDAsyncSocket.m in Sources */,
+				17619D141BB5328B00389414 /* BLSettingData.m in Sources */,
 				1762F52F1B92D29E00B4EBE7 /* Utils.m in Sources */,
 				171ED0D81BA918F9006D3BAE /* REMenuItem.m in Sources */,
 				171ED0E41BA952AD006D3BAE /* BLRootNavigationController.m in Sources */,
@@ -496,6 +520,7 @@
 				171ED0D91BA918F9006D3BAE /* REMenuItemView.m in Sources */,
 				17DBAD371B74B81000B26A83 /* APPChildViewController.m in Sources */,
 				17DDCA141B78B6E500AF415B /* PropertyConfigPhrase.m in Sources */,
+				17619D0E1BB3CD8400389414 /* BLPadSettingViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -616,6 +641,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -623,6 +650,7 @@
 				INFOPLIST_FILE = BLSmartPageViewDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Debug;
 		};
@@ -631,6 +659,8 @@
 			buildSettings = {
 				ALWAYS_SEARCH_USER_PATHS = NO;
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				HEADER_SEARCH_PATHS = (
 					"$(inherited)",
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
@@ -638,6 +668,7 @@
 				INFOPLIST_FILE = BLSmartPageViewDemo/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 			};
 			name = Release;
 		};

@@ -41,7 +41,7 @@ typedef NS_ENUM(NSInteger, REMenuLiveBackgroundStyle) {
     REMenuLiveBackgroundStyleDark
 };
 
-@interface REMenu : NSObject 
+@interface REMenu : NSObject <UITableViewDataSource,UITableViewDelegate>
 
 // Data
 //

@@ -35,7 +35,7 @@
 
 @interface REMenu ()
 
-@property (strong, readwrite, nonatomic) UIView *menuView;
+@property (strong, readwrite, nonatomic) UITableView *menuView;
 @property (strong, readwrite, nonatomic) UIView *menuWrapperView;
 @property (strong, readwrite, nonatomic) REMenuContainerView *containerView;
 @property (strong, readwrite, nonatomic) UIButton *backgroundButton;
@@ -54,17 +54,19 @@
     if ((self = [super init])) {
         self.imageAlignment = REMenuImageAlignmentLeft;
         self.closeOnSelection = YES;
-        self.itemHeight = 48.0;
+        //self.itemHeight = 48.0;
+        self.itemHeight = 42.0;
         self.separatorHeight = 2.0;
         self.waitUntilAnimationIsComplete = YES;
         
         self.textOffset = CGSizeMake(0, 0);
         self.subtitleTextOffset = CGSizeMake(0, 0);
-        self.font = [UIFont boldSystemFontOfSize:21.0];
-        self.subtitleFont = [UIFont systemFontOfSize:14.0];
+        //self.font = [UIFont boldSystemFontOfSize:21.0];
+        //self.subtitleFont = [UIFont systemFontOfSize:14.0];
+        self.font = [UIFont boldSystemFontOfSize:18.0];
+        self.subtitleFont = [UIFont systemFontOfSize:12.0];
         
         self.backgroundColor = [UIColor colorWithRed:53/255.0 green:53/255.0 blue:52/255.0 alpha:0.3];
-        //self.backgroundColor = [UIColor clearColor];//land add
         self.separatorColor = [UIColor colorWithPatternImage:self.separatorImage];
         self.textColor = [UIColor colorWithRed:128/255.0 green:126/255.0 blue:124/255.0 alpha:1.0];
         self.textShadowColor = [UIColor blackColor];
@@ -97,6 +99,34 @@
     return self;
 }
 
+
+- (NSInteger)numberOfSectionsInTableView:(UITableView *)tableView
+{
+    return 1;    //count of section
+}
+
+- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
+{
+    NSInteger cellCount = [self.items count];
+    return cellCount * 1.5;
+}
+
+// Row display. Implementers should *always* try to reuse cells by setting each cell's reuseIdentifier and querying for available reusable cells with dequeueReusableCellWithIdentifier:
+// Cell gets various attributes set automatically based on table (separators) and data source (accessory views, editing controls)
+
+- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
+{
+    static NSString *simpleTableIdentifier = @"SimpleTableItem";
+    
+    UITableViewCell *cell = [tableView dequeueReusableCellWithIdentifier:simpleTableIdentifier];
+    
+    if (cell == nil) {
+        cell = [[UITableViewCell alloc] initWithStyle:UITableViewCellStyleDefault reuseIdentifier:simpleTableIdentifier];
+    }
+    cell.backgroundColor = [UIColor clearColor];
+    return cell;
+}
+
 - (id)initWithItems:(NSArray *)items
 {
     if ((self = [self init])) {
@@ -127,7 +157,7 @@
     });
     
     self.menuView = ({
-        UIView *view = [[UIView alloc] init];
+        UITableView *view = [[UITableView alloc] init];
         if (!self.liveBlur || !REUIKitIsFlatMode()) {
             view.backgroundColor = self.backgroundColor;
         }
@@ -138,6 +168,9 @@
         view.layer.shouldRasterize = YES;
         view.layer.rasterizationScale = [UIScreen mainScreen].scale;
         view.autoresizingMask = UIViewAutoresizingFlexibleWidth;
+        view.delegate = self;
+        view.dataSource = self;
+        view.separatorStyle = UITableViewCellSeparatorStyleNone;
         view;
     });
     
@@ -169,6 +202,7 @@
     self.backgroundButton = ({
         UIButton *button = [UIButton buttonWithType:UIButtonTypeCustom];
         button.autoresizingMask = UIViewAutoresizingFlexibleWidth | UIViewAutoresizingFlexibleHeight;
+        //button.backgroundColor = [UIColor greenColor];
         button.accessibilityLabel = NSLocalizedString(@"Menu background", @"Menu background");
         button.accessibilityHint = NSLocalizedString(@"Double tap to close", @"Double tap to close");
         [button addTarget:self action:@selector(close) forControlEvents:UIControlEventTouchUpInside];
@@ -218,18 +252,26 @@
     if (REUIKitIsFlatMode() && self.liveBlur) {
         self.toolbar.frame = self.menuWrapperView.bounds;
     }
+
     self.containerView.frame = CGRectMake(rect.origin.x, rect.origin.y, rect.size.width, rect.size.height);
-    self.backgroundButton.frame = self.containerView.bounds;
+    //self.backgroundButton.frame = self.containerView.bounds;//land modify here to set all the background view as background button
+    
+    
     
     // Add subviews
     //
     if (REUIKitIsFlatMode() && self.liveBlur) {
         [self.menuWrapperView addSubview:self.toolbar];
     }
+    //land modify here to set all the background view as background button
+    self.backgroundButton.frame = view.bounds;
+    [view addSubview:self.backgroundButton];
+    
     [self.menuWrapperView addSubview:self.menuView];
-    [self.containerView addSubview:self.backgroundButton];
+    //[self.containerView addSubview:self.backgroundButton];//land modify here to set all the background view as background button
     [self.containerView addSubview:self.menuWrapperView];
     [view addSubview:self.containerView];
+    
     
     // Animate appearance
     //

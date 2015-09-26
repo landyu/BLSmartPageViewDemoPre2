@@ -12,6 +12,7 @@
 #import "PropertyConfigPhrase.h"
 #import "BLRootNavigationController.h"
 #import "GlobalMacro.h"
+#import "BLPadSettingViewController.h"
 //#import <objc/runtime.h>
 //@import CoreData;
 
@@ -20,26 +21,23 @@
     NSUInteger pageIndicatorIndex;
 }
 @property (strong, readwrite, nonatomic) REMenu *menu;
+@property (strong, readwrite, nonatomic) UIBarButtonItem * settingButton;
+@property (strong, readwrite, nonatomic) UIBarButtonItem * roomSelectButton;
+@property (strong, readwrite, nonatomic) UIBarButtonItem * barButtonSpacer;
+@property (strong, nonatomic) BLPadSettingViewController *settingViewController;
 @end
 
 @implementation ViewController
 
+#pragma mark - life cycle
+
 - (void)viewDidLoad {
     [super viewDidLoad];
     // Do any additional setup after loading the view, typically from a nib.
-    
+    self.navigationItem.rightBarButtonItems =[NSArray arrayWithObjects:self.barButtonSpacer, self.settingButton, self.barButtonSpacer, self.barButtonSpacer, self.roomSelectButton, nil];
     
     //add navigator room select button
-        UIButton * customRoomSelectButton = [UIButton buttonWithType:UIButtonTypeCustom];
-        customRoomSelectButton.frame = CGRectMake(924, 28, 30, 30);
-        [customRoomSelectButton setImage:[UIImage imageNamed:@"Icon_Home.png"] forState:UIControlStateNormal];
-        [customRoomSelectButton addTarget:self action:@selector(roomSelect:) forControlEvents:UIControlEventTouchUpInside];
-        UIBarButtonItem *roomSelectButton = [[UIBarButtonItem alloc] initWithCustomView:customRoomSelectButton];
-    
-        UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self.navigationController action:nil];
-        negativeSpacer.width = 40;
-        self.navigationItem.rightBarButtonItems =[NSArray arrayWithObjects:negativeSpacer, negativeSpacer, negativeSpacer, negativeSpacer, roomSelectButton, nil];
-        [self initRoomSelectButton];
+    [self initRoomSelectButton];
 
     //add page controller
     self.pageController = [[UIPageViewController alloc] initWithTransitionStyle:UIPageViewControllerTransitionStyleScroll navigationOrientation:UIPageViewControllerNavigationOrientationHorizontal options:nil];
@@ -84,11 +82,21 @@
     [[self view] addSubview:[self.pageController view]];
     [self.pageController didMoveToParentViewController:self];
     
-    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pageJump:) name:PageJumpNotification object:nil];
+    
 
 }
 
+//- (void)viewWillAppear:(BOOL)animated
+//{
+//    [super viewWillAppear:animated];
+//}
 
+- (void)viewDidAppear:(BOOL)animated
+{
+    [super viewDidAppear:animated];
+    
+    [[NSNotificationCenter defaultCenter] addObserver:self selector:@selector(pageJump:) name:PageJumpNotification object:nil];
+}
 
 
 - (void)didReceiveMemoryWarning {
@@ -96,6 +104,21 @@
     // Dispose of any resources that can be recreated.
 }
 
+
+#pragma mark - UIPageViewControllerDelegate
+
+- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
+{
+    if (completed) {
+        NSInteger currentIndex = ((UIViewController *)[pageViewController.viewControllers objectAtIndex:0]).view.tag;
+        
+        
+        //self.viewControllerNavigationItem.title = [self.sceneListDict objectForKey:[NSString stringWithFormat:@"%d", currentIndex]];
+        self.title = [self.sceneListDict objectForKey:[NSString stringWithFormat:@"%ld", (long)currentIndex]];
+    }
+}
+
+#pragma mark - UIPageViewControllerDataSource
 - (UIViewController *)pageViewController:(UIPageViewController *)pageViewController viewControllerBeforeViewController:(UIViewController *)viewController {
     
     NSUInteger index = [(APPChildViewController *)viewController index];
@@ -125,6 +148,97 @@
     
 }
 
+
+//- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
+//    // The number of items reflected in the page indicator.
+//    return sceneListCount;
+//}
+
+- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
+    // The selected item reflected in the page indicator.
+    NSLog(@"presentation Index For Page View Controller Done...");
+    return pageIndicatorIndex;
+}
+
+#pragma mark - event response
+- (void)roomSelect:(UIButton *)sender
+{
+    CGRect buttonRect = sender.frame;
+    NSLog(@"roomSelect @%f @%f", buttonRect.origin.x, buttonRect.origin.y);
+    if (self.menu.isOpen)
+        return [self.menu close];
+    
+    [self.menu showFromNavigationController:self.navigationController withPressedButtonRect:buttonRect];
+    //[self.menu showFromRect:buttonRect inView:self.view];
+}
+
+- (void)setBarTintColor:(id)sender
+{
+    NSLog(@"setBarTintColor");
+}
+
+- (void)pageJump:(NSNotification*) notification
+{
+    NSDictionary *pageNameDict = [notification userInfo];
+    NSString *roomName = [pageNameDict objectForKey:@"PageName"];
+    
+    if (roomName == nil)
+    {
+        return;
+    }
+    
+    __typeof (self) __weak weakSelf = self;
+    if (self.sceneListDict == nil)
+    {
+        NSString *path = [[NSBundle mainBundle] pathForResource:@"PropertyConfig" ofType:@"plist"];
+        NSDictionary *temDict = [[NSDictionary alloc]initWithContentsOfFile:path];
+        
+        self.sceneListDict = [[NSDictionary alloc] initWithDictionary:[temDict objectForKey:@"SceneList"]];
+    }
+    
+    
+    [self.sceneListDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
+     {
+         NSString *nibName = (NSString *)obj;
+         if ([nibName isEqualToString:roomName])
+         {
+             pageIndicatorIndex = [key integerValue];
+             [self.pageController setViewControllers:[NSArray arrayWithObject:[self viewControllerAtIndex:pageIndicatorIndex]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished)
+              {
+                  NSLog(@"back to %@...", nibName);
+                  weakSelf.title = nibName;
+                  //NSDictionary *pageJumpDict = [NSDictionary dictionaryWithObjectsAndKeys:roomName, @"PageName",nil];
+                  //[[NSNotificationCenter defaultCenter] postNotificationName:PageJumpNotification object:nil userInfo:pageJumpDict];
+                  //self.title = roomName;
+                  //[self setNavigatorTitle:roomName];
+              }];
+             *stop = YES;
+         }
+     }];
+}
+- (void)setttingButtonPressed:(UIButton *)sender
+{
+    NSLog(@"setttingButtonPressed");
+    [self.navigationController pushViewController:self.settingViewController animated:YES];
+    //[self.navigationController addChildViewController:self.settingPageNavigationController];
+    //[self.settingPageNavigationController.view show];
+}
+
+//- (IBAction)recvFromBusBtn:(id)sender
+//{
+//    
+//    NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddressField.text, @"Address", valueField.text, @"Value",nil];
+//    [[NSNotificationCenter defaultCenter] postNotificationName:@"BL.BLSmartPageViewDemo.RecvFromBus" object:self userInfo:eibBusDataDict];
+//}
+
+//- (void)viewWillLayoutSubviews
+//{
+//    [super viewWillLayoutSubviews];
+//    BLRootNavigationController *navigationController = (BLRootNavigationController *)self.navigationController;
+//    [navigationController.menu setNeedsLayout];
+//}
+
+#pragma mark - private methods
 - (APPChildViewController *)viewControllerAtIndex:(NSUInteger)index {
     
     //APPChildViewController *childViewController = [[APPChildViewController alloc] initWithNibName:@"APPChildViewController" bundle:nil];
@@ -150,55 +264,18 @@
     
 }
 
-//- (void)pageViewController:(UIPageViewController *)pageViewController willTransitionToViewControllers:(NSArray *)pendingViewControllers NS_AVAILABLE_IOS(6_0)
-//{
-//    //NSLog(@"22222222");
-//    return;
-//}
-
-
-- (void)pageViewController:(UIPageViewController *)pageViewController didFinishAnimating:(BOOL)finished previousViewControllers:(NSArray *)previousViewControllers transitionCompleted:(BOOL)completed
-{
-    if (completed) {
-        NSInteger currentIndex = ((UIViewController *)[pageViewController.viewControllers objectAtIndex:0]).view.tag;
-        
-
-        //self.viewControllerNavigationItem.title = [self.sceneListDict objectForKey:[NSString stringWithFormat:@"%d", currentIndex]];
-        self.title = [self.sceneListDict objectForKey:[NSString stringWithFormat:@"%ld", (long)currentIndex]];
-    }
-}
-
-
-- (NSInteger)presentationCountForPageViewController:(UIPageViewController *)pageViewController {
-    // The number of items reflected in the page indicator.
-    return sceneListCount;
-}
-
-- (NSInteger)presentationIndexForPageViewController:(UIPageViewController *)pageViewController {
-    // The selected item reflected in the page indicator.
-    NSLog(@"presentation Index For Page View Controller Done...");
-    return pageIndicatorIndex;
-}
-
-
-//- (IBAction)recvFromBusBtn:(id)sender
-//{
-//    
-//    NSDictionary *eibBusDataDict = [NSDictionary dictionaryWithObjectsAndKeys:groupAddressField.text, @"Address", valueField.text, @"Value",nil];
-//    [[NSNotificationCenter defaultCenter] postNotificationName:@"BL.BLSmartPageViewDemo.RecvFromBus" object:self userInfo:eibBusDataDict];
-//}
-
-//- (void)viewWillLayoutSubviews
-//{
-//    [super viewWillLayoutSubviews];
-//    BLRootNavigationController *navigationController = (BLRootNavigationController *)self.navigationController;
-//    [navigationController.menu setNeedsLayout];
-//}
-
-
-#pragma mark navigator room select button
 - (void)initRoomSelectButton
 {
+//    UIButton * customRoomSelectButton = [UIButton buttonWithType:UIButtonTypeCustom];
+//    customRoomSelectButton.frame = CGRectMake(0, 0, 30, 30);
+//    [customRoomSelectButton setImage:[UIImage imageNamed:@"Icon_Home.png"] forState:UIControlStateNormal];
+//    [customRoomSelectButton addTarget:self action:@selector(roomSelect:) forControlEvents:UIControlEventTouchUpInside];
+//    UIBarButtonItem *roomSelectButton = [[UIBarButtonItem alloc] initWithCustomView:customRoomSelectButton];
+//    
+//    UIBarButtonItem *negativeSpacer = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:self.navigationController action:nil];
+//    negativeSpacer.width = 40;
+//    self.navigationItem.rightBarButtonItems =[NSArray arrayWithObjects:negativeSpacer, negativeSpacer, negativeSpacer, negativeSpacer, roomSelectButton, nil];
+    
     
     if (REUIKitIsFlatMode())
     {
@@ -336,61 +413,70 @@
     return items;
 }
 
-- (void)roomSelect:(UIButton *)sender
+
+#pragma mark - getters and setters
+- (UIBarButtonItem *) roomSelectButton
 {
-    CGRect buttonRect = sender.frame;
-    NSLog(@"roomSelect @%f @%f", buttonRect.origin.x, buttonRect.origin.y);
-    if (self.menu.isOpen)
-        return [self.menu close];
-    
-    [self.menu showFromNavigationController:self.navigationController withPressedButtonRect:buttonRect];
-    //[self.menu showFromRect:buttonRect inView:self.view];
+    if (!_roomSelectButton)
+    {
+        _roomSelectButton =
+        ({
+            UIButton * CustomButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            CustomButton.frame = CGRectMake(0, 0, 30, 30);
+            [CustomButton setImage:[UIImage imageNamed:@"Icon_Home.png"] forState:UIControlStateNormal];
+            [CustomButton addTarget:self action:@selector(roomSelect:) forControlEvents:UIControlEventTouchUpInside];
+            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:CustomButton];
+            button;
+        });
+    }
+    return _roomSelectButton;
 }
 
-- (void)setBarTintColor:(id)sender
+
+- (UIBarButtonItem *) settingButton
 {
-    NSLog(@"setBarTintColor");
+    if (!_settingButton)
+    {
+        _settingButton =
+        ({
+            UIButton * CustomButton = [UIButton buttonWithType:UIButtonTypeCustom];
+            CustomButton.frame = CGRectMake(0, 0, 30, 30);
+            [CustomButton setImage:[UIImage imageNamed:@"Icon_Activity.png"] forState:UIControlStateNormal];
+            [CustomButton addTarget:self action:@selector(setttingButtonPressed:) forControlEvents:UIControlEventTouchUpInside];
+            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithCustomView:CustomButton];
+            button;
+        });
+    }
+    return _settingButton;
 }
 
-#pragma mark Page Jump Notification
-- (void)pageJump:(NSNotification*) notification
+- (UIBarButtonItem *) barButtonSpacer
 {
-    NSDictionary *pageNameDict = [notification userInfo];
-    NSString *roomName = [pageNameDict objectForKey:@"PageName"];
-    
-    if (roomName == nil)
+    if (!_barButtonSpacer)
     {
-        return;
+        _barButtonSpacer =
+        ({
+            UIBarButtonItem *button = [[UIBarButtonItem alloc] initWithBarButtonSystemItem:UIBarButtonSystemItemFixedSpace target:nil action:nil];
+            button.width = 40;
+            button;
+        });
     }
-    
-    __typeof (self) __weak weakSelf = self;
-    if (self.sceneListDict == nil)
+    return _barButtonSpacer;
+}
+
+- (BLPadSettingViewController *) settingViewController
+{
+    if (!_settingViewController)
     {
-        NSString *path = [[NSBundle mainBundle] pathForResource:@"PropertyConfig" ofType:@"plist"];
-        NSDictionary *temDict = [[NSDictionary alloc]initWithContentsOfFile:path];
-        
-        self.sceneListDict = [[NSDictionary alloc] initWithDictionary:[temDict objectForKey:@"SceneList"]];
+        _settingViewController =
+        ({
+            BLPadSettingViewController *viewController = [[BLPadSettingViewController alloc] initWithNibName:@"BLPadSettingViewController" bundle:nil];
+            //BLPadSettingViewController *viewController = [[BLPadSettingViewController alloc] init];
+            //[[viewController view] setFrame:CGRectMake(0, 65, 1024, 703)];
+            viewController;
+        });
     }
-    
-    
-    [self.sceneListDict enumerateKeysAndObjectsUsingBlock:^(id key, id obj, BOOL *stop)
-     {
-         NSString *nibName = (NSString *)obj;
-         if ([nibName isEqualToString:roomName])
-         {
-             pageIndicatorIndex = [key integerValue];
-             [self.pageController setViewControllers:[NSArray arrayWithObject:[self viewControllerAtIndex:pageIndicatorIndex]] direction:UIPageViewControllerNavigationDirectionForward animated:YES completion:^(BOOL finished)
-              {
-                  NSLog(@"back to %@...", nibName);
-                  weakSelf.title = nibName;
-                  //NSDictionary *pageJumpDict = [NSDictionary dictionaryWithObjectsAndKeys:roomName, @"PageName",nil];
-                  //[[NSNotificationCenter defaultCenter] postNotificationName:PageJumpNotification object:nil userInfo:pageJumpDict];
-                  //self.title = roomName;
-                  //[self setNavigatorTitle:roomName];
-              }];
-             *stop = YES;
-         }
-     }];
+    return _settingViewController;
 }
 
 @end

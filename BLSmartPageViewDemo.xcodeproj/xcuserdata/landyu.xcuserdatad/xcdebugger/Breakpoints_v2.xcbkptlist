@@ -9,38 +9,6 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "139"
-            endingLineNumber = "139"
-            landmarkName = "-viewControllerAtIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "138"
-            endingLineNumber = "138"
-            landmarkName = "-viewControllerAtIndex:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/PropertyConfigPhrase.m"
             timestampString = "460953477.579081"
             startingColumnNumber = "9223372036854775807"
@@ -74,11 +42,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768098.446777"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "115"
-            endingLineNumber = "115"
+            startingLineNumber = "138"
+            endingLineNumber = "138"
             landmarkName = "-pageViewController:viewControllerAfterViewController:"
             landmarkType = "5">
          </BreakpointContent>
@@ -90,11 +58,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768098.446777"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "116"
-            endingLineNumber = "116"
+            startingLineNumber = "139"
+            endingLineNumber = "139"
             landmarkName = "-pageViewController:viewControllerAfterViewController:"
             landmarkType = "5">
          </BreakpointContent>
@@ -106,11 +74,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768702.031609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "190"
-            endingLineNumber = "190"
+            startingLineNumber = "233"
+            endingLineNumber = "233"
             landmarkName = "@implementation ViewController"
             landmarkType = "3">
          </BreakpointContent>
@@ -298,11 +266,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/APPChildViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464877404.49535"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "220"
-            endingLineNumber = "220"
+            startingLineNumber = "221"
+            endingLineNumber = "221"
             landmarkName = "-parseDataForPreTransmitWithObject:destGroupAddress:buttonName:valueLength:objectPropertyDictionay:"
             landmarkType = "5">
          </BreakpointContent>
@@ -410,11 +378,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/APPChildViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464877404.49535"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "237"
-            endingLineNumber = "237"
+            startingLineNumber = "238"
+            endingLineNumber = "238"
             landmarkName = "-sceneButtonPressed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -442,11 +410,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/APPChildViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464877404.49535"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "307"
-            endingLineNumber = "307"
+            startingLineNumber = "308"
+            endingLineNumber = "308"
             landmarkName = "-acButtonPressed:"
             landmarkType = "5">
          </BreakpointContent>
@@ -874,11 +842,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768702.031609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "336"
-            endingLineNumber = "336"
+            startingLineNumber = "413"
+            endingLineNumber = "413"
             landmarkName = "-roomSelectButtonItemsInit"
             landmarkType = "5">
          </BreakpointContent>
@@ -890,11 +858,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768702.031609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "313"
-            endingLineNumber = "313"
+            startingLineNumber = "390"
+            endingLineNumber = "390"
             landmarkName = "-roomSelectButtonItemsInit"
             landmarkType = "5">
          </BreakpointContent>
@@ -906,11 +874,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768702.031609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "315"
-            endingLineNumber = "315"
+            startingLineNumber = "392"
+            endingLineNumber = "392"
             landmarkName = "-roomSelectButtonItemsInit"
             landmarkType = "5">
          </BreakpointContent>
@@ -922,11 +890,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768702.031609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "318"
-            endingLineNumber = "318"
+            startingLineNumber = "395"
+            endingLineNumber = "395"
             landmarkName = "-roomSelectButtonItemsInit"
             landmarkType = "5">
          </BreakpointContent>
@@ -938,28 +906,12 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464768702.031609"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "320"
-            endingLineNumber = "320"
+            startingLineNumber = "397"
+            endingLineNumber = "397"
             landmarkName = "-roomSelectButtonItemsInit"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "367"
-            endingLineNumber = "367"
-            landmarkName = "-pageJump:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -970,11 +922,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BLSmartPageViewDemo/APPChildViewController.m"
-            timestampString = "464348354.347498"
+            timestampString = "464877404.49535"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "430"
-            endingLineNumber = "430"
+            startingLineNumber = "431"
+            endingLineNumber = "431"
             landmarkName = "-pageJumpButtonPressd:"
             landmarkType = "5">
          </BreakpointContent>
@@ -985,13 +937,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            filePath = "BLSmartPageViewDemo/REMenu/REMenu.m"
+            timestampString = "464536362.808255"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "358"
-            endingLineNumber = "358"
-            landmarkName = "-pageJump:"
+            startingLineNumber = "256"
+            endingLineNumber = "256"
+            landmarkName = "-showFromRect:inView:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
@@ -1001,61 +953,13 @@
             shouldBeEnabled = "No"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
+            filePath = "BLSmartPageViewDemo/BLCustomClass/BLPadSettingViewController.m"
+            timestampString = "464863010.763893"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "359"
-            endingLineNumber = "359"
-            landmarkName = "-pageJump:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "361"
-            endingLineNumber = "361"
-            landmarkName = "-pageJump:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
-            landmarkName = "-pageJump:"
-            landmarkType = "5">
-         </BreakpointContent>
-      </BreakpointProxy>
-      <BreakpointProxy
-         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
-         <BreakpointContent
-            shouldBeEnabled = "No"
-            ignoreCount = "0"
-            continueAfterRunningActions = "No"
-            filePath = "BLSmartPageViewDemo/ViewController.m"
-            timestampString = "464348354.347498"
-            startingColumnNumber = "9223372036854775807"
-            endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "391"
-            endingLineNumber = "391"
-            landmarkName = "-pageJump:"
+            startingLineNumber = "37"
+            endingLineNumber = "37"
+            landmarkName = "-viewWillAppear:"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>
